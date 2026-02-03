@@ -1,0 +1,25 @@
+/*
+ * -----------------------------------------------------------------------------
+ * GRUVBOX DARK PALETTE DEFINITIONS
+ * Shared color variables for Waybar styles
+ * -----------------------------------------------------------------------------
+ */
+
+/* --- BACKGROUNDS --- */
+@define-color bg            #282828; /* Main Background */
+@define-color bg_bright     #3c3836; /* Lighter (Secondary backgrounds) */
+@define-color bg_dim        #1d2021; /* Darker (Hard background) */
+
+/* --- FOREGROUNDS --- */
+@define-color fg            #ebdbb2; /* Main Text (Cream) */
+@define-color fg_dim        #a89984; /* Dimmed Text (Gray) */
+
+/* --- ACCENTS --- */
+@define-color red           #cc241d;
+@define-color green         #98971a;
+@define-color yellow        #d79921;
+@define-color blue          #458588;
+@define-color purple        #b16286;
+@define-color aqua          #689d6a;
+@define-color orange        #fe8019; /* Bright Orange (High Contrast) */
+@define-color orange_dim    #d65d0e;

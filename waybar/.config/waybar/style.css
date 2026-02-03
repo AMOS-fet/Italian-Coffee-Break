@@ -1,0 +1,317 @@
+@import "colors.css";
+
+/* -----------------------------------------------------
+ * File: style.css
+ * Description: Waybar Stylesheet
+ * Author: AMOS-fet
+ * ----------------------------------------------------- */
+
+/* -----------------------------------------------------
+ * 1. GLOBAL SETTINGS
+ * ----------------------------------------------------- */
+
+* {
+    font-family: "SF Pro Display", "SF Pro", "JetBrainsMono Nerd Font", sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    min-height: 0;
+    padding: 0;
+    margin: 0;
+    border: none;
+    border-radius: 0;
+}
+
+window#waybar {
+    background: @bg;
+    color: @fg;
+    border-bottom: 4px solid @orange;
+    min-height: 30px;
+}
+
+/* Vertical alignment fix */
+.modules-left, .modules-center, .modules-right {
+    margin-top: 0px;
+    padding: 0;
+}
+
+/* -----------------------------------------------------
+ * 2. TOOLTIPS
+ * ----------------------------------------------------- */
+
+tooltip {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+}
+
+tooltip label {
+    background: #282828;       /* Gruvbox BG */
+    color: #ebdbb2;            /* Text */
+    border: 4px solid #fe8019; /* Orange Border */
+    border-radius: 12px;
+    padding: 10px;
+}
+
+/* -----------------------------------------------------
+ * 3. WORKSPACES
+ * ----------------------------------------------------- */
+#workspaces {
+    border: 0px solid @orange_dim ;
+    border-radius: 15px;
+    margin-bottom: 7px;
+    margin-top: 4px;
+    margin-left: 11px;
+    margin-right: 6px; 
+    padding: 0px 3px 0px 1px;
+    background-color: @orange;
+}
+
+#workspaces button {
+    padding: 0 3px 0 3px;
+    margin-bottom: -2px;
+    margin-right: 0px;
+    margin-top: -2px;
+    background: transparent;
+    transition: all 0.2s ease;
+    min-height: 0px;
+}
+
+#workspaces button label {
+    font-size: 15px;
+    font-weight: bold;
+    color: @orange_dim;
+    background: transparent;
+}
+
+#workspaces button.active label {
+    color: @fg;
+    background: transparent;
+}
+
+#workspaces button.empty label {
+    color: @bg;
+    background: transparent;
+}
+
+#workspaces button.active.empty label {
+    color: @fg;
+    background: transparent;
+}
+
+
+#workspaces button:hover {
+    background: transparent;
+    box-shadow: none;
+    text-shadow: none;
+    border: none;
+}
+
+#workspaces button:hover label {
+    color: @fg; 
+    background: transparent;
+}
+
+/* -----------------------------------------------------
+ * 4. LEFT MODULES
+ * ----------------------------------------------------- */
+
+.modules-left > * {
+    margin-right: 10px;
+    padding: 0 5px;
+    margin-bottom: 4px;
+}
+
+#custom-os {
+    color: @orange;
+    font-size: 18px;
+    padding-left: 0px;
+    border-radius: 4px;
+    margin-bottom: 5px;
+    transition: color 0.2s ease;
+}
+
+#custom-os:hover {
+    color: @fg;
+}
+
+#custom-kernel {
+    color: @fg_dim;
+    margin-left: 8px;
+    margin-bottom: 5px;
+}
+
+/* -----------------------------------------------------
+ * 5. CENTER MODULES
+ * ----------------------------------------------------- */
+
+#window {
+    color: @fg;
+    margin-bottom: 5px;
+}
+
+#mpris {
+    color: #282828;
+    background: @green;
+    padding: 2px 15px;
+    border-radius: 12px;
+    margin-left: 10px;
+    margin-bottom: 7px;
+    margin-top: 3px;
+}
+
+/* -----------------------------------------------------
+ * 6. RIGHT MODULES (General Layout)
+ * ----------------------------------------------------- */
+
+#custom-updates,
+#cpu,
+#memory,
+#disk,
+#temperature,
+#backlight,
+#network,
+#bluetooth,
+#pulseaudio,
+#clock,
+#custom-battery,
+#custom-power {
+    padding: 0 7px;
+    margin-bottom: 4px;
+    background-color: transparent;
+    border-radius: 4px;
+    transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+/* Hover Effects */
+#custom-updates:hover,
+#cpu:hover,
+#memory:hover,
+/* #disk:hover, */
+#network:hover,
+#bluetooth:hover {
+    background: transparent;
+    color: @fg;
+}
+#pulseaudio:hover,
+#clock:hover,
+#custom-battery:hover,
+#custom-power:hover {
+    background: transparent;
+    color: @fg;
+}
+
+/* -----------------------------------------------------
+ * 7. RIGHT MODULES (Specific Colors & Logic)
+ * ----------------------------------------------------- */
+
+/* Updates Logic */
+#custom-updates {
+    color: @green; /* Fallback */
+}
+#custom-updates.updates-available {
+    color: @green; /* Attention needed */
+}
+#custom-updates.updates-none {
+    color: @green; /* System clean */
+}
+#custom-updates:hover {
+    color: @fg;
+}
+
+/* Hardware Stats */
+#cpu            { color: @yellow; }
+#memory         { color: @yellow; }
+#disk           { color: @yellow; }
+#temperature    { color: @orange; }
+#backlight      { color: @fg; }
+#clock          { color: @green; font-weight: bold; }
+
+/* Network */
+#network {
+    color: @blue;
+    padding-left: 5px;
+    padding-right: 9px;
+}
+#network.disconnected { color: @fg; }
+#network.disabled     { color: @fg_dim; }
+
+/* Bluetooth */
+#bluetooth {
+    color: @aqua;
+    padding-left: 9px;
+    padding-right: 2px;
+}
+#bluetooth.connected { color: @blue; }
+#bluetooth.disabled  { color: @fg_dim; }
+#bluetooth:hover {
+    color: @fg;
+}
+
+/* PulseAudio */
+window#waybar #pulseaudio {
+    color: @aqua;
+    padding-left: 2px;
+    padding-right: 7px;
+}
+window#waybar #pulseaudio.muted {
+    color: @red;
+    padding-right: 10px;
+}
+window#waybar #pulseaudio.muted:hover {
+    color: @fg;
+}
+
+/* Battery */
+#custom-battery {
+    color: @green;
+    margin-bottom: 5px;
+    margin-left: -3px;
+}
+#custom-battery.charging { color: @orange; }
+
+/* Power */
+#custom-power {
+    color: @red;
+    margin-right: 3px;
+    margin-left: -2px;
+    padding-right: 2px;
+}
+
+/* Separator */
+#custom-sep {
+    color: @fg_dim;
+    opacity: 0.5;
+    background: transparent;
+    padding: 0 5px;
+    font-size: 20px;
+    margin: -3px 0 4px 0;
+    font-weight: lighter;
+}
+
+/* -----------------------------------------------------
+ * 8. ANIMATIONS
+ * ----------------------------------------------------- */
+
+@keyframes blink {
+    to { color: @fg; }
+}
+
+@keyframes blink-critical {
+    to { color: @fg; }
+}
+
+#temperature.critical {
+    color: @red;
+    animation-name: blink;
+    animation-duration: 0.5s;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+
+#custom-battery.critical {
+    color: @red;
+    animation-name: blink-critical;
+    animation-duration: 0.5s;
+    animation-iteration-count: 10;
+    animation-direction: alternate;
+}

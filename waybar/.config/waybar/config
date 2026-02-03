@@ -1,0 +1,248 @@
+// -----------------------------------------------------
+// File: config
+// Description: Waybar configuration file
+// Author: AMOS-fet
+// -----------------------------------------------------
+
+{
+    // -------------------------------------------------------------------------
+    // GENERAL SETTINGS
+    // -------------------------------------------------------------------------
+    "layer": "top",
+    "position": "top",
+    "height": 32,
+    "spacing": 0,
+    "margin-top": 0,
+    "margin-left": 0,
+    "margin-right": 0,
+
+    // -------------------------------------------------------------------------
+    // MODULES LAYOUT
+    // -------------------------------------------------------------------------
+    "modules-left": [
+        "custom/os",
+        // "custom/sep",
+        "hyprland/workspaces",
+        // "custom/sep",
+        "custom/kernel"
+    ],
+    "modules-center": [
+        "hyprland/window",
+        "mpris"
+    ],
+    "modules-right": [
+        "custom/updates",
+        "cpu",
+        "memory",
+        "disk",
+        "temperature",
+        "network",
+        "bluetooth",
+        "backlight",
+        "pulseaudio",
+        "clock",
+        "custom/battery",
+        "custom/power"
+    ],
+
+    // -------------------------------------------------------------------------
+    // LEFT MODULES
+    // -------------------------------------------------------------------------
+
+    "custom/os": {
+        "format": "  ",
+        "tooltip": false,
+        "on-click": "~/dotfiles/scripts/theme-menu.sh"
+    },
+
+    "hyprland/workspaces": {
+        "disable-scroll": false,
+        "all-outputs": true,
+        "format": "{icon}",
+        "cursor": 60,
+        "format-icons": {
+            "active": "",
+            "default": "",
+            // "",
+            "empty": "",
+            // "",
+        },
+        "persistent-workspaces": {
+            "1": [],
+            "2": [],
+            "3": [],
+            "4": [],
+            "5": []
+        }
+    },
+
+    "custom/kernel": {
+        "exec": "uname -r",
+        "format": "<span size='12pt' rise='-1000'>󰌽</span>   {}",
+        "tooltip": false
+    },
+
+    // -------------------------------------------------------------------------
+    // CENTER MODULES
+    // -------------------------------------------------------------------------
+
+    "hyprland/window": {
+        "format": "{title}",
+        "max-length": 40,
+        "separate-outputs": true,
+        "tooltip": false
+    },
+
+    "mpris": {
+        "format": "   {artist} - {title}",
+        "max-length": 40,
+        "player": "spotify",
+        "interval": 1,
+        "tooltip": false
+    },
+
+    // -------------------------------------------------------------------------
+    // RIGHT MODULES
+    // -------------------------------------------------------------------------
+
+    "custom/updates": {
+        // Updated to use the new kebab-case filename
+        "exec": "~/dotfiles/scripts/check-updates.sh",
+        "interval": 600,
+        "format": "{}",
+        "on-click": "kitty -e ~/dotfiles/scripts/update.sh",
+        "tooltip": false
+    },
+
+    "cpu": {
+        "interval": 5,
+        "format": " <b>{usage}%</b>",
+        "states": {
+            "warning": 70,
+            "critical": 90
+        },
+        "on-click": "kitty -e btop"
+    },
+
+    "memory": {
+        "interval": 5,
+        "format": " <span letter_spacing='-250'> </span><b>{percentage}%</b>",
+        "tooltip": false,
+        "on-click": "kitty -e btop"
+    },
+
+    "disk": {
+        "interval": 30,
+        "format": "󱛟<span letter_spacing='1750'> </span><b>{percentage_used}%</b>",
+        "path": "/"
+    },
+
+    "temperature": {
+        // Check if this path is stable across reboots
+        "hwmon-path": "/sys/class/hwmon/hwmon3/temp1_input",
+        "interval": 2,
+        "critical-threshold": 80,
+        "format": "<span letter_spacing='500'> </span><b>{temperatureC}°C</b>",
+        "tooltip": false
+    },
+
+    "network": {
+        "format-wifi": "<span size='12pt' rise='6000'>{icon}</span>",
+        "format-ethernet": "<span size='12pt' rise='6000'> </span>",
+        "format-linked": "",
+        "format-disconnected": "<span size='12pt' rise='6000'>󰤯</span>",
+        "format-disabled": "<span size='12pt' rise='6000'>󰤮</span>",
+        "format-icons": ["󰤯", "󰤟", "󰤢", "󰤥", "󰤨"],
+        "tooltip-format-wifi": "    SSID: {essid} ({signalStrength}%)\n    Interface: {ifname}\n    Private IP:  {ipaddr}",
+        "tooltip-format-ethernet": "  Ethernet Connection\n  Interface: {ifname}\n  Private IP: {ipaddr}",
+        "tooltip-format-disconnected": "Disconnected",
+        "tooltip-format-disabled": "Disabled",
+        "on-click": "kitty -e nmtui",
+        "on-click-right": "rfkill toggle wifi"
+    },
+
+    "bluetooth": {
+        "format": "{icon}",
+        "format-disabled": "{icon}",
+        "format-connected": "{icon}",
+        "format-icons": {
+            "on": "<span size='12pt' rise='-2000'></span>",
+            "connected": "<span size='12pt' rise='-2000'>󰂱</span>",
+            "off": "<span size='12pt' rise='-2000'>󰂲</span>",
+            "disabled": "<span size='12pt' rise='-2000'>󰂲</span>"
+        },
+        "tooltip-format": "{controller_alias}\t{controller_address}\n\n{num_connections} connected",
+        "tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{num_connections} connected\n\n{device_enumerate}",
+        "on-click": "kitty -e bluetuith",
+        "on-click-right": "rfkill toggle bluetooth"
+    },
+
+    "backlight": {
+        // "device": "intel_backlight",
+        "format": "{icon} <b>{percent}%</b>",
+        "format-icons": ["󰃚", "󰃛", "󰃜", "󰃝", "󰃞", "󰃟", "󰃠"],
+        "min-length": 6,
+        "on-scroll-up": "brightnessctl set +1%",
+        "on-scroll-down": "brightnessctl set 1%- -n",
+        "tooltip": false,
+        "cursor": 116,
+    },
+
+    "pulseaudio": {
+        "format": "{icon}<span letter_spacing='8000'> </span><b>{volume}%</b>",
+        "format-muted": "",
+        "format-icons": {
+            "default": ["", "", ""]
+        },
+        "on-click": "pactl set-sink-mute @DEFAULT_SINK@ toggle",
+        "on-click-right": "exec pavucontrol",
+        "cursor": 116,
+    },
+
+    "clock": {
+        "interval": 1,
+        "format": "󰥔<span letter_spacing='3000'> </span>{:%H:%M}",
+        "tooltip-format": "<span font='SF Mono' size='11pt'>{calendar}</span>\n\n{:%H:%M:%S}",
+        "calendar": {
+            "mode": "month",
+            "mode-mon-col": 3,
+            "weeks-pos": "right",
+            "on-scroll": 1,
+            "format": {
+                "months": "<span color='#fe8019'><b>{}</b></span>",
+                "days": "<span color='#ebdbb2'><b>{}</b></span>",
+                "weeks": "<span color='#928374'><b>W{}</b></span>",
+                "today": "<span color='#fb4934'><b><u>{}</u></b></span>"
+            }
+        },
+        "actions": {
+            "on-click-right": "mode",
+            "on-scroll-up": "shift_up",
+            "on-scroll-down": "shift_down"
+        }
+    },
+
+    "custom/battery": {
+        "exec": "~/dotfiles/scripts/battery-anim.sh",
+        "return-type": "json",
+        "format": "{}",
+        "tooltip": false,
+        // Updated from wofi-power.sh to power-profile-selector.sh
+        "on-click": "~/dotfiles/scripts/power-profile-selector.sh"
+    },
+
+    "custom/power": {
+        "format": "<span weight='bold' size='12pt'> </span>",
+        "on-click": "~/dotfiles/scripts/power-menu.sh",
+        "tooltip": false
+    },
+
+    // -------------------------------------------------------------------------
+    // UTILS
+    // -------------------------------------------------------------------------
+
+    "custom/sep": {
+        "format": "|",
+        "tooltip": false
+    }
+}
