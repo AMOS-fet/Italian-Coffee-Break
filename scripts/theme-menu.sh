@@ -2,7 +2,7 @@
 
 # -----------------------------------------------------
 # File: theme-menu.sh
-# Description: Wofi menu to select between Light and Dark themes
+# Description: Rofi menu to select between Light and Dark themes
 # Author: AMOS-fet
 # -----------------------------------------------------
 
@@ -12,30 +12,47 @@
 
 DOTFILES="$HOME/dotfiles"
 SCRIPT_PATH="$DOTFILES/scripts/theme-switch.sh"
+ROFI_CONFIG="$HOME/.config/rofi/config.rasi"
 
 # Icons and Titles
 OPT_LIGHT="   Light Mode"
 OPT_DARK="   Dark Mode"
 
-# Window dimensions
-ROW_HEIGHT=34
-OFFSET=0
-TOTAL_HEIGHT=$(( (2 * ROW_HEIGHT) + OFFSET ))
-
 # -----------------------------------------------------
 # 2. Show Menu
 # -----------------------------------------------------
 
-CHOICE=$(echo -e "$OPT_LIGHT\n$OPT_DARK" | wofi --show dmenu \
-    --prompt "Select Theme" \
-    --cache-file /dev/null \
-    --height $TOTAL_HEIGHT \
-    --width 250 \
-    --lines 2 \
-    --location center \
-    --style "$HOME/.config/wofi/style.css" \
-    -b \
-    -j)
+CHOICE=$(echo -e "$OPT_LIGHT\n$OPT_DARK" | rofi -dmenu \
+    -i \
+    -config "$ROFI_CONFIG" \
+    -p "Theme" \
+    -theme-str '
+        window { 
+            width: 230px; 
+            border: 4px;
+        }
+        mainbox { 
+            padding: 3px;          
+            children: [ listview ];
+        }
+        listview { 
+            lines: 2; 
+            padding: 0px;
+            scrollbar: false;
+            spacing: 5px;          
+        }
+        element { 
+            orientation: horizontal;
+            children: [ element-text ];
+            padding: 10px 12px;    
+            border-radius: 6px;    
+        }
+        element-text { 
+            expand: true;
+            horizontal-align: 0.0;  
+            vertical-align: 0.5;
+        }
+    ')
 
 # -----------------------------------------------------
 # 3. Execute Switch

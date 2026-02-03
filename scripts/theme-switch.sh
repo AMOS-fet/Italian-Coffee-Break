@@ -54,8 +54,8 @@ ln -sf "$DOTFILES/waybar/.config/waybar/colors-$MODE.css" "$CONFIG_DIR/waybar/co
 # --- Kitty Terminal ---
 ln -sf "$DOTFILES/kitty/.config/kitty/theme-$MODE.conf" "$CONFIG_DIR/kitty/theme.conf"
 
-# --- Wofi Launcher ---
-ln -sf "$DOTFILES/wofi/.config/wofi/$MODE.css" "$CONFIG_DIR/wofi/style.css"
+# --- Rofi Launcher ---
+ln -sf "$DOTFILES/rofi/.config/rofi/config-$MODE.rasi" "$CONFIG_DIR/rofi/config.rasi"
 
 # --- Starship Prompt ---
 ln -sf "$DOTFILES/starship/.config/starship-$MODE.toml" "$CONFIG_DIR/starship.toml"
