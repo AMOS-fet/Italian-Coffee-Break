@@ -7,6 +7,8 @@
 # Author: AMOS-fet
 # -----------------------------------------------------
 
+export PATH=$HOME/.local/bin:$HOME/bin:/usr/local/bin:/usr/bin:/bin:$PATH
+
 MODE=$1
 ACCENT=$2
 DOTFILES="$HOME/dotfiles"
@@ -84,7 +86,7 @@ to_rgb() {
 if command -v Hyprland &> /dev/null; then
 
     TEMPLATE_FILE="$DOTFILES/hypr/.config/hypr/colors-${MODE}.conf"
-    TARGET_FILE="$HOME/.config/hypr/colors.conf"
+    TARGET_FILE="$CONFIG_DIR/hypr/colors.conf"
 
     if [[ ! -f "$TEMPLATE_FILE" ]]; then
         echo " Error: Template '$TEMPLATE_FILE' not found!"
@@ -130,7 +132,7 @@ fi
 # -----------------------------------------------------
 if command -v kitty &> /dev/null; then
     TEMPLATE_FILE="$DOTFILES/kitty/.config/kitty/theme-${MODE}.conf"
-    TARGET_FILE="$HOME/.config/kitty/theme.conf"
+    TARGET_FILE="$CONFIG_DIR/kitty/theme.conf"
 
     if [[ ! -f "$TEMPLATE_FILE" ]]; then
         echo " Error: Template '$TEMPLATE_FILE' not found!"
@@ -161,7 +163,7 @@ fi
 # -----------------------------------------------------
 if command -v waybar &> /dev/null; then
     TEMPLATE_FILE="$DOTFILES/waybar/.config/waybar/colors-${MODE}.css"
-    TARGET_FILE="$HOME/.config/waybar/colors.css"
+    TARGET_FILE="$CONFIG_DIR/waybar/colors.css"
 
     if [[ ! -f "$TEMPLATE_FILE" ]]; then
         echo " Error: Template '$TEMPLATE_FILE' not found!"
@@ -190,34 +192,45 @@ if command -v waybar &> /dev/null; then
 fi
 
 # -----------------------------------------------------
-# 9. Application: MAKO (Notifications)
+# 8. Application: MICRO EDITOR
+# -----------------------------------------------------
+if command -v micro &> /dev/null; then
+    
+    TEMPLATE_FILE="$DOTFILES/micro/.config/micro/colorschemes/gruvbox-${MODE}.micro"
+    TARGET_FILE="$CONFIG_DIR/micro/colorschemes/custom.micro"
+    SETTINGS_FILE="$CONFIG_DIR/micro/settings.json"
+
+    if [[ -f "$TEMPLATE_FILE" ]]; then
+        
+        cat "$TEMPLATE_FILE" > "$TARGET_FILE"
+
+        if [[ -f "$SETTINGS_FILE" ]]; then
+            if ! grep -q '"colorscheme": "custom"' "$SETTINGS_FILE"; then
+                 sed 's/"colorscheme": ".*"/"colorscheme": "custom"/' "$SETTINGS_FILE" > "${SETTINGS_FILE}.tmp" && mv "${SETTINGS_FILE}.tmp" "$SETTINGS_FILE"
+            fi
+        fi
+    fi
+fi
+
+# -----------------------------------------------------
+# 9. Application: MAKO 
 # -----------------------------------------------------
 if command -v mako &> /dev/null; then
-    TEMPLATE_FILE="$DOTFILES/mako/.config/mako/${MODE}"
+    TEMPLATE_FILE="$DOTFILES/mako/.config/mako/${MODE}" 
     TARGET_FILE="$HOME/.config/mako/config"
 
-    if [[ ! -f "$TEMPLATE_FILE" ]]; then
-        echo " Error: Template '$TEMPLATE_FILE' not found!"
-        exit 1
+    if [[ -f "$TEMPLATE_FILE" ]]; then
+        BASE_ACCENT="${ACCENT%_br}"
+        if [ "$MODE" == "dark" ]; then VAR_NAME="${BASE_ACCENT}_br"; else VAR_NAME="${BASE_ACCENT}"; fi
+        MAKO_BORDER="${!VAR_NAME}"
+       
+        if [[ -z "$MAKO_BORDER" ]]; then MAKO_BORDER="${!BASE_ACCENT}"; fi
+        
+        rm -f $TARGET_FILE
+        sed "0,/^border-color=/s/^border-color=.*/border-color=$MAKO_BORDER/" "$TEMPLATE_FILE" > "$TARGET_FILE"
     fi
-    
-    BASE_ACCENT="${ACCENT%_br}"
-
-    if [ "$MODE" == "dark" ]; then
-        VAR_NAME="${BASE_ACCENT}_br"
-    else
-        VAR_NAME="${BASE_ACCENT}"
-    fi
-
-    MAKO_BORDER="${!VAR_NAME}"
-
-    if [[ -z "$MAKO_BORDER" ]]; then
-         ALT_VAR="${BASE_ACCENT}"
-         MAKO_BORDER="${!ALT_VAR}"
-    fi
-
-    rm -f "$TARGET_FILE"
-    cp "$TEMPLATE_FILE" "$TARGET_FILE"
-
-    sed -i "0,/^border-color=/s/^border-color=.*/border-color=$MAKO_BORDER/" "$TARGET_FILE"
+    makoctl reload >/dev/null 2>&1 || true
 fi
+
+
+

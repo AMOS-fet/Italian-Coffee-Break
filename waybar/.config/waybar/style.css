@@ -46,7 +46,7 @@ tooltip {
 tooltip label {
     background: @bg;       
     color: @fg;            
-    border: 4px solid @accent; 
+    border: 4px solid @accent_br; 
     border-radius: 12px;
     padding: 10px;
 }
@@ -136,7 +136,7 @@ tooltip label {
 #custom-kernel {
     color: @fg_dim;
     margin-left: 8px;
-    margin-bottom: 5px;
+    margin-bottom: 4px;
 }
 
 /* -----------------------------------------------------

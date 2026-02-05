@@ -63,6 +63,6 @@ case "$ACCENT" in
     *"Orange"*) ACCENT_CODE="orange" ;; 
 esac
 
-notify-send "Applying: $MODE theme ($ACCENT_CODE)..." -i preferences-desktop-theme
+#notify-send "Applying: $MODE theme ($ACCENT_CODE)..." -i preferences-desktop-theme
 
 "$SCRIPT_PATH" "$MODE" "$ACCENT_CODE"

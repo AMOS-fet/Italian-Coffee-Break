@@ -1,3 +1,4 @@
+border-color=#fe8019
 # -----------------------------------------------------
 # File: dark
 # Description: Mako configuration file (Gruvbox Dark Theme)
@@ -26,7 +27,7 @@ text-color=#F9EDD2
 
 # Border styling
 border-size=4
-border-color=#fe8019
+## BORDER_ANCHOR
 border-radius=10
 
 # Icons
@@ -61,10 +62,6 @@ on-button-right=dismiss
 border-color=#B7B827
 text-color=#B7B827
 default-timeout=3000
-
-[urgency=normal]
-border-color=#F9BB31
-text-color=#F9BB31
 
 [urgency=high]
 border-color=#F94835

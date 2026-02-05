@@ -1,3 +1,4 @@
+border-color=#af3a03
 # -----------------------------------------------------
 # File: light
 # Description: Mako configuration file (Gruvbox Light Theme)
@@ -26,7 +27,7 @@ text-color=#282828
 
 # Border styling (Rust Orange for contrast)
 border-size=4
-border-color=#af3a03
+## BORDER_ANCHOR
 border-radius=10
 
 # Icons
@@ -61,10 +62,6 @@ on-button-right=dismiss
 border-color=#98971C
 text-color=#98971C
 default-timeout=3000
-
-[urgency=normal]
-border-color=#D89822
-text-color=#D89822
 
 [urgency=high]
 border-color=#CA2420
