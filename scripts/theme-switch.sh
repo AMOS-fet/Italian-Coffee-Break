@@ -7,195 +7,217 @@
 # Author: AMOS-fet
 # -----------------------------------------------------
 
-# -----------------------------------------------------
-# 1. Variables & Arguments
-# -----------------------------------------------------
-
 MODE=$1
+ACCENT=$2
 DOTFILES="$HOME/dotfiles"
 CONFIG_DIR="$HOME/.config"
+PALETTE_FILE="$DOTFILES/scripts/palette.conf"
 
-# Validate input
+# -----------------------------------------------------
+# 1. Validate data
+# -----------------------------------------------------
+
+if [[ ! -f "$PALETTE_FILE" ]]; then
+    echo " Error: Palette file not found at $PALETTE_FILE"
+    exit 1
+fi
+
+source "$PALETTE_FILE"
+
 if [[ "$MODE" != "dark" && "$MODE" != "light" ]]; then
     echo " Error: Specify mode [dark|light]"
     exit 1
 fi
 
-echo " Switching to $MODE theme..."
+if [[ -z "$ACCENT" ]]; then
+    echo " Error: Accent argument missing."
+    exit 1
+fi
+
+# -----------------------------------------------------
+# 2. Select accent color brightness
+# -----------------------------------------------------
 
 if [ "$MODE" == "dark" ]; then
-    # Dark Mode Settings
-    GTK_THEME="Colloid-Orange-Dark-Gruvbox"
-    CURSOR_THEME="phinger-cursors-light" # Light cursor for contrast
-    COLOR_SCHEME="prefer-dark"
-    MICRO_COLOR="gruvbox-dark"
-    VIM_BG="dark"
-    FIREFOX_OVERRIDE=0 # 0=Dark
+    CANDIDATE="${ACCENT}_br"
 else
-    # Light Mode Settings
-    GTK_THEME="Colloid-Orange-Light-Gruvbox"
-    CURSOR_THEME="phinger-cursors-dark" # Dark cursor for contrast
-    COLOR_SCHEME="prefer-light"
-    MICRO_COLOR="gruvbox-light"
-    VIM_BG="light"
-    FIREFOX_OVERRIDE=1 # 1=Light
+    CANDIDATE="${ACCENT}"
 fi
 
-# -----------------------------------------------------
-# 2. Symlink Management
-# -----------------------------------------------------
-
-# --- Hyprland ---
-ln -sf "$DOTFILES/hypr/.config/hypr/colors-$MODE.conf" "$CONFIG_DIR/hypr/colors.conf"
-
-# --- Waybar ---
-ln -sf "$DOTFILES/waybar/.config/waybar/colors-$MODE.css" "$CONFIG_DIR/waybar/colors.css"
-
-# --- Kitty Terminal ---
-ln -sf "$DOTFILES/kitty/.config/kitty/theme-$MODE.conf" "$CONFIG_DIR/kitty/theme.conf"
-
-# --- Rofi Launcher ---
-ln -sf "$DOTFILES/rofi/.config/rofi/config-$MODE.rasi" "$CONFIG_DIR/rofi/config.rasi"
-
-# --- Starship Prompt ---
-ln -sf "$DOTFILES/starship/.config/starship-$MODE.toml" "$CONFIG_DIR/starship.toml"
-
-# --- Mako Notifications ---
-ln -sf "$DOTFILES/mako/.config/mako/$MODE" "$CONFIG_DIR/mako/config"
-
-# --- Yazi File Manager ---
-ln -sf "$DOTFILES/yazi/.config/yazi/theme-$MODE.toml" "$CONFIG_DIR/yazi/theme.toml"
-
-# --- Pacseek ---
-PACSEEK_DIR="$CONFIG_DIR/pacseek"
-mkdir -p "$PACSEEK_DIR"
-ln -sf "$DOTFILES/pacseek/.config/pacseek/config-$MODE.json" "$PACSEEK_DIR/config.json"
-
-# -----------------------------------------------------
-# 3. Application Specific Configs
-# -----------------------------------------------------
-
-# --- Wallpaper (SWWW) ---
-# Executes the separate script to apply wallpaper and swww settings
-$DOTFILES/scripts/apply-neon-$MODE.sh &
-
-# --- Micro Editor ---
-MICRO_SETTINGS="$CONFIG_DIR/micro/settings.json"
-if [ -f "$MICRO_SETTINGS" ]; then
-    sed -i "s/\"colorscheme\": \".*\"/\"colorscheme\": \"$MICRO_COLOR\"/" "$MICRO_SETTINGS"
-    echo "Micro theme set to: $MICRO_COLOR"
+if [[ -n "${!CANDIDATE}" ]]; then
+    TARGET_VAR="$CANDIDATE"
 else
-    echo " Warning: Micro settings.json not found."
+    TARGET_VAR="$ACCENT"
 fi
 
-# --- Neovim (LazyVim) ---
-NVIM_CONFIG_DIR="$DOTFILES/nvim/lua/config"
-mkdir -p "$NVIM_CONFIG_DIR"
-echo "vim.o.background = \"$VIM_BG\"" > "$NVIM_CONFIG_DIR/bg_mode.lua"
+FINAL_ACCENT_HEX="${!TARGET_VAR}"
 
-# --- LibreWolf / Firefox ---
-FIREFOX_PROFILE=$(find "$HOME/.librewolf" -maxdepth 2 -type d -name "*.default-default" 2>/dev/null | head -n 1)
-# Fallback to .default if .default-default not found
-if [ -z "$FIREFOX_PROFILE" ]; then
-    FIREFOX_PROFILE=$(find "$HOME/.librewolf" -maxdepth 2 -type d -name "*.default" 2>/dev/null | head -n 1)
+# -----------------------------------------------------
+# 3. Variables
+# -----------------------------------------------------
+
+if [ "$MODE" == "dark" ]; then
+    # --- DARK MODE ---
+    T_BG="$black"           # Main background
+    T_BG_ALT="$black_hd"    # UI Elements background (bars, inputs)
+    T_FG="$white"           # Main text / Foreground
+    T_FG_DIM="$white_sf"    # Secondary text / Dimmed
+    T_BORDER="$black_sf"    # Inactive borders
+else
+    # --- LIGHT MODE ---
+    T_BG="$white"           # Main background
+    T_BG_ALT="$white_hd"    # UI Elements background
+    T_FG="$black"           # Main text / Foreground
+    T_FG_DIM="$black_sf"    # Secondary text / Dimmed
+    T_BORDER="$white_sf"    # Inactive borders
 fi
 
-if [ -n "$FIREFOX_PROFILE" ]; then
-    CHROME_DIR="$FIREFOX_PROFILE/chrome"
-    mkdir -p "$CHROME_DIR"
+# HEX to RGB
+to_rgb() {
+    echo "${1:1}"
+}
 
-    ln -sf "$DOTFILES/librewolf/chrome/userChrome-$MODE.css" "$CHROME_DIR/userChrome.css"
-    ln -sf "$DOTFILES/librewolf/chrome/userContent-$MODE.css" "$CHROME_DIR/userContent.css"
+# -----------------------------------------------------
+# 4. Application: HYPRLAND
+# -----------------------------------------------------
 
-    USER_JS="$FIREFOX_PROFILE/user.js"
-    echo "user_pref(\"layout.css.prefers-color-scheme.content-override\", $FIREFOX_OVERRIDE);" > "$USER_JS"
+if command -v Hyprland &> /dev/null; then
+
+    TEMPLATE_FILE="$DOTFILES/hypr/.config/hypr/colors-${MODE}.conf"
+    TARGET_FILE="$HOME/.config/hypr/colors.conf"
+
+    if [[ ! -f "$TEMPLATE_FILE" ]]; then
+        echo " Error: Template '$TEMPLATE_FILE' not found!"
+        exit 1
+    fi    
+
+    BASE_ACCENT="${ACCENT%_br}"
+    VAR_NORMAL="\$${BASE_ACCENT%_br}"   # es. "red"
+    VAR_BRIGHT="\$${BASE_ACCENT}_br"    # es. "red_br"
     
     if [ "$MODE" == "dark" ]; then
-         echo 'user_pref("ui.systemUsesDarkTheme", 1);' >> "$USER_JS"
+        NEW_BORDER="$VAR_BRIGHT $VAR_NORMAL 45deg"
     else
-         echo 'user_pref("ui.systemUsesDarkTheme", 0);' >> "$USER_JS"
+        NEW_BORDER="$VAR_NORMAL $VAR_BRIGHT 45deg"
+    fi
+
+    rm -f "$TARGET_FILE"
+    cp -f "$TEMPLATE_FILE" "$TARGET_FILE"
+    sed -i "s|^\$active_border.*|\$active_border = $NEW_BORDER|" "$TARGET_FILE"
+
+    hyprctl reload 1> /dev/null
+fi
+
+# -----------------------------------------------------
+# 5. Application: ROFI
+# -----------------------------------------------------
+if command -v rofi &> /dev/null; then
+    TEMPLATE_FILE="$DOTFILES/rofi/.config/rofi/config-${MODE}.rasi"
+    TARGET_FILE="$CONFIG_DIR/rofi/config.rasi"
+
+    if [[ ! -f "$TEMPLATE_FILE" ]]; then
+        echo " Error: Template '$TEMPLATE_FILE' not found!"
+        exit 1
+    fi
+
+    rm -f "$TARGET_FILE"
+    cp "$TEMPLATE_FILE" "$TARGET_FILE"
+    sed -i "s/border-col:.*;/border-col: $FINAL_ACCENT_HEX;/" "$TARGET_FILE"
+fi
+
+# -----------------------------------------------------
+# 6. Application: KITTY
+# -----------------------------------------------------
+if command -v kitty &> /dev/null; then
+    TEMPLATE_FILE="$DOTFILES/kitty/.config/kitty/theme-${MODE}.conf"
+    TARGET_FILE="$HOME/.config/kitty/theme.conf"
+
+    if [[ ! -f "$TEMPLATE_FILE" ]]; then
+        echo " Error: Template '$TEMPLATE_FILE' not found!"
+        exit 1
     fi
     
-    echo " Updated LibreWolf theme in: $(basename "$FIREFOX_PROFILE")"
-else
-    echo " Warning: LibreWolf profile not found."
-fi
+    BASE_ACCENT="${ACCENT%_br}"    
+    VAR_NORMAL="${BASE_ACCENT}"     
+    VAR_BRIGHT="${BASE_ACCENT}_br"  
+    
+    HEX_ACTIVE="${!VAR_BRIGHT}"    
+    HEX_INACTIVE="${!VAR_NORMAL}"  
 
-# --- Neovim/Lazyvim ---
-NVIM_BG_FILE="$CONFIG_DIR/nvim/lua/config/bg_mode.lua"
+    if [[ -z "$HEX_INACTIVE" ]]; then HEX_INACTIVE="$HEX_ACTIVE"; fi
+    
+    rm -f "$TARGET_FILE"
+    cp "$TEMPLATE_FILE" "$TARGET_FILE"
 
-echo "-- Auto-generated by theme-switch.sh" > "$NVIM_BG_FILE"
-echo "vim.o.background = \"$MODE\"" >> "$NVIM_BG_FILE"
+    sed -i "s/^selection_background.*/selection_background  $HEX_ACTIVE/" "$TARGET_FILE"
+    sed -i "s/^active_tab_background.*/active_tab_background $HEX_ACTIVE/" "$TARGET_FILE"
+    sed -i "s/^inactive_tab_background.*/inactive_tab_background $HEX_INACTIVE/" "$TARGET_FILE"
 
-echo "Neovim background set to: $MODE"
-
-# --- Spicetify/Spotify ---
-if pgrep -x "spotify" > /dev/null; then
-    SPOTIFY_RUNNING=1
-else
-    SPOTIFY_RUNNING=0
+    killall -SIGUSR1 kitty 2>/dev/null
 fi
 
 # -----------------------------------------------------
-# 4. GTK & UI Appearance
+# 7. Application: WAYBAR
 # -----------------------------------------------------
+if command -v waybar &> /dev/null; then
+    TEMPLATE_FILE="$DOTFILES/waybar/.config/waybar/colors-${MODE}.css"
+    TARGET_FILE="$HOME/.config/waybar/colors.css"
 
-THEMES_SOURCE="$DOTFILES/themes/.themes"
-GTK_OVERRIDE_SOURCE="$DOTFILES/themes/.themes/gtk" 
+    if [[ ! -f "$TEMPLATE_FILE" ]]; then
+        echo " Error: Template '$TEMPLATE_FILE' not found!"
+        exit 1
+    fi
+    
+    BASE_ACCENT="${ACCENT%_br}"
+    
+    VAR_NORMAL="${BASE_ACCENT}"      # "red"
+    VAR_BRIGHT="${BASE_ACCENT}_br"   # "red_br"
+    
+    HEX_NORMAL="${!VAR_NORMAL}"      
+    HEX_BRIGHT="${!VAR_BRIGHT}"      
+   
+    if [[ -z "$HEX_NORMAL" ]]; then HEX_NORMAL="$HEX_BRIGHT"; fi
 
-echo " Setting GTK Theme: $GTK_THEME"
+    
+    rm -f "$TARGET_FILE"
+    cp "$TEMPLATE_FILE" "$TARGET_FILE"
+    
+    sed -i "s/@define-color accent_br.*/@define-color accent_br $HEX_BRIGHT;/" "$TARGET_FILE"
+    sed -i "s/@define-color accent .*/@define-color accent $HEX_NORMAL;/" "$TARGET_FILE"
 
-rm "$CONFIG_DIR/gtk-4.0/assets" 2>/dev/null
-ln -sf "$THEMES_SOURCE/$GTK_THEME/gtk-4.0/assets" "$CONFIG_DIR/gtk-4.0/assets"
-
-ln -sf "$GTK_OVERRIDE_SOURCE/$MODE.css" "$CONFIG_DIR/gtk-4.0/gtk.css"
-ln -sf "$GTK_OVERRIDE_SOURCE/$MODE.css" "$CONFIG_DIR/gtk-3.0/gtk.css"
-
-# GSettings (Gnome Interface)
-gsettings set org.gnome.desktop.interface gtk-theme "$GTK_THEME"
-gsettings set org.gnome.desktop.interface color-scheme "$COLOR_SCHEME"
-gsettings set org.gnome.desktop.interface cursor-theme "$CURSOR_THEME"
-
-# Update settings.ini files
-GTK3_SETTINGS="$CONFIG_DIR/gtk-3.0/settings.ini"
-GTK4_SETTINGS="$CONFIG_DIR/gtk-4.0/settings.ini"
-
-if [ -f "$GTK3_SETTINGS" ]; then
-    sed -i "s/^gtk-theme-name=.*/gtk-theme-name=$GTK_THEME/" "$GTK3_SETTINGS"
-fi
-if [ -f "$GTK4_SETTINGS" ]; then
-    sed -i "s/^gtk-theme-name=.*/gtk-theme-name=$GTK_THEME/" "$GTK4_SETTINGS"
-fi
-
-# Hyprland Cursor (Immediate effect)
-hyprctl setcursor "$CURSOR_THEME" 24
-
-# -----------------------------------------------------
-# 5. Reload System Services
-# -----------------------------------------------------
-
-# Reload Waybar
-pkill waybar && hyprctl dispatch exec waybar
-
-# Reload Kitty (instances)
-killall -SIGUSR1 kitty 2>/dev/null
-
-# Reload Mako
-makoctl reload
-
-# Reload Hyprland
-hyprctl reload 1> /dev/null
-
-# Reload Spicetify
-spicetify config current_theme custom color_scheme Gruvbox-$MODE 1> /dev/null
-spicetify apply 1> /dev/null
-
-if [ "$SPOTIFY_RUNNING" -eq 0 ]; then
-    sleep 0.5
-    pkill -x spotify
+   
+    pkill -SIGUSR2 waybar
 fi
 
-# Notify User
-notify-send "Theme Changed" "Applied $MODE theme successfully"
+# -----------------------------------------------------
+# 9. Application: MAKO (Notifications)
+# -----------------------------------------------------
+if command -v mako &> /dev/null; then
+    TEMPLATE_FILE="$DOTFILES/mako/.config/mako/${MODE}"
+    TARGET_FILE="$HOME/.config/mako/config"
 
-echo " Done!"
+    if [[ ! -f "$TEMPLATE_FILE" ]]; then
+        echo " Error: Template '$TEMPLATE_FILE' not found!"
+        exit 1
+    fi
+    
+    BASE_ACCENT="${ACCENT%_br}"
+
+    if [ "$MODE" == "dark" ]; then
+        VAR_NAME="${BASE_ACCENT}_br"
+    else
+        VAR_NAME="${BASE_ACCENT}"
+    fi
+
+    MAKO_BORDER="${!VAR_NAME}"
+
+    if [[ -z "$MAKO_BORDER" ]]; then
+         ALT_VAR="${BASE_ACCENT}"
+         MAKO_BORDER="${!ALT_VAR}"
+    fi
+
+    rm -f "$TARGET_FILE"
+    cp "$TEMPLATE_FILE" "$TARGET_FILE"
+
+    sed -i "0,/^border-color=/s/^border-color=.*/border-color=$MAKO_BORDER/" "$TARGET_FILE"
+fi

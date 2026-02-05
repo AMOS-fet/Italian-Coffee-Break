@@ -1,25 +1,27 @@
 /*
- * -----------------------------------------------------------------------------
- * GRUVBOX LIGHT PALETTE DEFINITIONS
- * Shared color variables for Waybar styles
- * -----------------------------------------------------------------------------
- */
+* -----------------------------------------------------
+* WAYBAR COLOR PALETTE (Gruvbox Material Custom)
+* Author: AMOS-fet
+* -----------------------------------------------------
+*/
 
 /* --- BACKGROUNDS --- */
-@define-color bg            #fbf1c7; /* Main Background (Cream Soft) */
-@define-color bg_bright     #f9f5d7; /* Lighter (Hard Background / White-ish) */
-@define-color bg_dim        #f2e5bc; /* Darker (Secondary / Cream Dark) */
+@define-color bg            #F9EDD2; /* Main Background */
+@define-color bg_bright     #FCF3DB; /* Lighter (Secondary backgrounds) */
+@define-color bg_dim        #D3C29F; /* Darker (Hard background) */
 
 /* --- FOREGROUNDS --- */
-@define-color fg            #3c3836; /* Main Text (Dark Grey) */
-@define-color fg_dim        #7c6f64; /* Dimmed Text (Light Grey) */
+@define-color fg            #282828; /* Main Text */
+@define-color fg_dim        #8F8173; /* Dimmed Text (Gray) */
 
 /* --- ACCENTS --- */
-@define-color red           #cc241d;
-@define-color green         #98971a;
-@define-color yellow        #d79921;
-@define-color blue          #458588;
-@define-color purple        #b16286;
-@define-color aqua          #689d6a;
-@define-color orange        #af3a03;
-@define-color orange_dim #d65d0e;
+@define-color red           #F94835;
+@define-color green         #B7B827;
+@define-color yellow        #F9BB31;
+@define-color blue          #83A497;
+@define-color purple        #D184CC;
+@define-color aqua          #8EBE7A;
+@define-color orange        #FE7C0D; 
+
+@define-color accent        #D75C0F;
+@define-color accent_br     #FE7C0D;

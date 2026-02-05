@@ -24,11 +24,10 @@
 window#waybar {
     background: @bg;
     color: @fg;
-    border-bottom: 4px solid @orange;
+    border-bottom: 4px solid @accent_br;
     min-height: 30px;
 }
 
-/* Vertical alignment fix */
 .modules-left, .modules-center, .modules-right {
     margin-top: 0px;
     padding: 0;
@@ -45,9 +44,9 @@ tooltip {
 }
 
 tooltip label {
-    background: #282828;       /* Gruvbox BG */
-    color: #ebdbb2;            /* Text */
-    border: 4px solid #fe8019; /* Orange Border */
+    background: @bg;       
+    color: @fg;            
+    border: 4px solid @accent; 
     border-radius: 12px;
     padding: 10px;
 }
@@ -56,14 +55,14 @@ tooltip label {
  * 3. WORKSPACES
  * ----------------------------------------------------- */
 #workspaces {
-    border: 0px solid @orange_dim ;
+    border: 0px solid @accent ;
     border-radius: 15px;
     margin-bottom: 7px;
     margin-top: 4px;
     margin-left: 11px;
     margin-right: 6px; 
     padding: 0px 3px 0px 1px;
-    background-color: @orange;
+    background-color: @accent_br;
 }
 
 #workspaces button {
@@ -79,7 +78,7 @@ tooltip label {
 #workspaces button label {
     font-size: 15px;
     font-weight: bold;
-    color: @orange_dim;
+    color: @accent;
     background: transparent;
 }
 
@@ -122,7 +121,7 @@ tooltip label {
 }
 
 #custom-os {
-    color: @orange;
+    color: @accent_br;
     font-size: 18px;
     padding-left: 0px;
     border-radius: 4px;
@@ -150,7 +149,7 @@ tooltip label {
 }
 
 #mpris {
-    color: #282828;
+    color: @bg;
     background: @green;
     padding: 2px 15px;
     border-radius: 12px;
@@ -239,7 +238,7 @@ tooltip label {
 #bluetooth {
     color: @aqua;
     padding-left: 9px;
-    padding-right: 2px;
+    padding-right: 3px;
 }
 #bluetooth.connected { color: @blue; }
 #bluetooth.disabled  { color: @fg_dim; }

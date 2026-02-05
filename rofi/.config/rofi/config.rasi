@@ -1,1 +1,123 @@
-/home/amos/dotfiles/rofi/.config/rofi/config-dark.rasi
+/* -----------------------------------------------------
+ * Rofi Config - Gruvbox Dark
+ * Author: AMOS-fet
+ * ----------------------------------------------------- */
+
+configuration {
+    modi: "drun,run";
+    show-icons: true;
+    display-drun: "";
+    display-run: "Run";
+    font: "SF Pro Display 11"; 
+    drun-display-format: "{name}";
+}
+
+/* -----------------------------------------------------
+ * Global Properties
+ * ----------------------------------------------------- */
+* {
+    bg-col:       #282828;   
+    bg-col-light: #3c3836;   
+    border-col: #83A497;   
+    selected-col: #a89984;   
+    fg-col:       #ebdbb2;   
+    fg-col2:      #282828;   
+    grey:         #928374;   
+
+    background-color: transparent;
+    width: 400px;
+}
+
+/* -----------------------------------------------------
+ * Window
+ * ----------------------------------------------------- */
+window {
+    border: 4px;
+    border-color: @border-col;
+    border-radius: 10px;
+    background-color: @bg-col;
+    anchor: center;
+    location: center;
+}
+
+mainbox {
+    background-color: @bg-col;
+    padding: 3px; 
+    children: [ inputbar, listview ];
+}
+
+/* -----------------------------------------------------
+ * Input Bar
+ * ----------------------------------------------------- */
+inputbar {
+    children: [ prompt, entry ];
+    background-color: @bg-col-light;
+    border-radius: 6px;
+    margin: 0px 0px 6px 0px; 
+    padding: 8px;
+}
+
+prompt {
+    background-color: transparent;
+    text-color: @border-col;
+    enabled: true;
+    margin: 0px 8px 0px 0px;
+    font: "JetBrainsMono Nerd Font 11";
+}
+
+entry {
+    background-color: transparent;
+    text-color: @fg-col;
+    placeholder: "Find...";
+    placeholder-color: @grey;
+}
+
+/* -----------------------------------------------------
+ * List View
+ * ----------------------------------------------------- */
+listview {
+    lines: 5;
+    columns: 1;
+    fixed-height: true;
+    scrollbar: false;
+    border: 0px;
+    padding: 0px;
+    margin: 0px;
+    background-color: transparent; 
+    spacing: 2px;
+}
+
+/* -----------------------------------------------------
+ * Elements
+ * ----------------------------------------------------- */
+
+element {
+    padding: 6px 8px;
+    border-radius: 6px;
+    margin: 0px;
+    background-color: transparent;
+    text-color: @fg-col;
+}
+
+element normal.normal,
+element alternate.normal {
+    background-color: transparent;
+    text-color: @fg-col;
+}
+
+element selected.normal {
+    background-color: @selected-col;
+    text-color: @fg-col2;
+}
+
+element-icon {
+    size: 24px;
+    margin: 0px 10px 0px 0px;
+    background-color: transparent;
+}
+
+element-text {
+    vertical-align: 0.5;
+    background-color: transparent;
+    text-color: inherit; 
+}

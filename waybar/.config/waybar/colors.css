@@ -1,1 +1,35 @@
-/home/amos/dotfiles/waybar/.config/waybar/colors-dark.css
+/*
+* -----------------------------------------------------
+* WAYBAR COLOR PALETTE (Gruvbox Material Custom)
+* Author: AMOS-fet
+* -----------------------------------------------------
+*/
+
+/* --- BACKGROUNDS --- */
+@define-color bg            #282828; /* Main Background */
+@define-color bg_bright     #504945; /* Lighter (Secondary backgrounds) */
+@define-color bg_dim        #1B1E1F; /* Darker (Hard background) */
+
+/* --- FOREGROUNDS --- */
+@define-color fg            #F9EDD2; /* Main Text (Cream) */
+@define-color fg_dim        #8F8173; /* Dimmed Text (Gray) */
+
+/* --- ACCENTS --- */
+@define-color red           #CA2420;
+@define-color green         #98971C;
+@define-color yellow        #D89822;
+@define-color blue          #448385;
+@define-color purple        #A962AF;
+@define-color aqua          #679B69;
+@define-color orange        #D75C0F; 
+
+@define-color red_br        #F94835;
+@define-color green_br      #B7B827;
+@define-color yellow_br     #F9BB31;
+@define-color blue_br       #83A497;
+@define-color purple_br     #D184CC;
+@define-color aqua_br       #8EBE7A;
+@define-color orange_br     #FE7C0D; 
+
+@define-color accent #448385;
+@define-color accent_br #83A497;

@@ -2,7 +2,7 @@
 
 # -----------------------------------------------------
 # File: theme-menu.sh
-# Description: Rofi menu to select between Light and Dark themes
+# Description: Theme and accent color selector
 # Author: AMOS-fet
 # -----------------------------------------------------
 
@@ -12,59 +12,57 @@
 
 DOTFILES="$HOME/dotfiles"
 SCRIPT_PATH="$DOTFILES/scripts/theme-switch.sh"
-ROFI_CONFIG="$HOME/.config/rofi/config.rasi"
+SELECTOR="$DOTFILES/scripts/rofi-menu-selector.sh"
 
 # Icons and Titles
 OPT_LIGHT="   Light Mode"
 OPT_DARK="   Dark Mode"
 
-# -----------------------------------------------------
-# 2. Show Menu
-# -----------------------------------------------------
+RED="<span color='#F94835'></span>   Red"
+GREEN="<span color='#B7B827'></span>   Green"
+YELLOW="<span color='#F9BB31'></span>   Yellow"
+BLUE="<span color='#83A497'></span>   Blue"
+PURPLE="<span color='#D184CC'></span>   Purple"
+AQUA="<span color='#8EBE7A'></span>   Aqua"
+ORANGE="<span color='#FE7C0D'></span>   Orange"
 
-CHOICE=$(echo -e "$OPT_LIGHT\n$OPT_DARK" | rofi -dmenu \
-    -i \
-    -config "$ROFI_CONFIG" \
-    -p "Theme" \
-    -theme-str '
-        window { 
-            width: 230px; 
-            border: 4px;
-        }
-        mainbox { 
-            padding: 3px;          
-            children: [ listview ];
-        }
-        listview { 
-            lines: 2; 
-            padding: 0px;
-            scrollbar: false;
-            spacing: 5px;          
-        }
-        element { 
-            orientation: horizontal;
-            children: [ element-text ];
-            padding: 10px 12px;    
-            border-radius: 6px;    
-        }
-        element-text { 
-            expand: true;
-            horizontal-align: 0.0;  
-            vertical-align: 0.5;
-        }
-    ')
+COLOR_ENTRIES="$RED\n$GREEN\n$YELLOW\n$BLUE\n$PURPLE\n$AQUA\n$ORANGE"
 
 # -----------------------------------------------------
-# 3. Execute Switch
+# 2. Show Menus
 # -----------------------------------------------------
 
-case "$CHOICE" in
-    "$OPT_LIGHT")
-        notify-send "Theme" "Switching to Light Mode..." -i weather-clear
-        "$SCRIPT_PATH" light 
-        ;;
-    "$OPT_DARK")
-        notify-send "Theme" "Switching to Dark Mode..." -i weather-clear-night
-        "$SCRIPT_PATH" dark
-        ;;
+THEME=$(echo -e "$OPT_LIGHT\n$OPT_DARK" | "$SELECTOR")
+
+if [ -z "$THEME" ]; then
+    exit 0
+fi
+
+ACCENT=$(echo -e "$COLOR_ENTRIES" | "$SELECTOR")
+
+if [ -z "$ACCENT" ]; then
+    exit 0
+fi
+
+# -----------------------------------------------------
+# 3. Override Variables
+# -----------------------------------------------------
+
+case "$THEME" in
+    *"Light"*) MODE="light" ;;
+    *"Dark"*)  MODE="dark" ;;
 esac
+
+case "$ACCENT" in
+    *"Red"*)    ACCENT_CODE="red" ;;
+    *"Green"*)  ACCENT_CODE="green" ;;
+    *"Yellow"*) ACCENT_CODE="yellow" ;;
+    *"Blue"*)   ACCENT_CODE="blue" ;;
+    *"Purple"*) ACCENT_CODE="purple" ;;
+    *"Aqua"*)   ACCENT_CODE="aqua" ;;
+    *"Orange"*) ACCENT_CODE="orange" ;; 
+esac
+
+notify-send "Applying: $MODE theme ($ACCENT_CODE)..." -i preferences-desktop-theme
+
+"$SCRIPT_PATH" "$MODE" "$ACCENT_CODE"
