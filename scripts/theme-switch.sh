@@ -206,6 +206,21 @@ if command -v starship &> /dev/null; then
 fi
 
 # -----------------------------------------------------
+# 8. APPLICATION: BTOP 
+# -----------------------------------------------------
+if command -v btop &> /dev/null; then
+    TEMPLATE_FILE="$DOTFILES/btop.config/btop/themes/${MODE}.theme"
+    TARGET_FILE="$CONFIG_DIR/btop/themes/current.theme"
+    SETTINGS_FILE="$CONFIG_DIR/btop/btop.conf"
+
+    cp "$TEMPLATE_FILE" "$TARGET_FILE"
+
+    if [[ -f "$BTOP_CONF_FILE" ]]; then
+        sed -i "s|^color_theme =.*|color_theme = \"$BTOP_TARGET_FILE\"|" "$BTOP_CONF_FILE"
+    fi
+fi
+
+# -----------------------------------------------------
 # 7. Application: WAYBAR
 # -----------------------------------------------------
 if command -v waybar &> /dev/null; then
