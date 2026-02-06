@@ -159,6 +159,53 @@ if command -v kitty &> /dev/null; then
 fi
 
 # -----------------------------------------------------
+# 7. Application: STARSHIP 
+# -----------------------------------------------------
+if command -v starship &> /dev/null; then
+    TEMPLATE_FILE="$DOTFILES/starship/.config/starship-${MODE}.toml"
+    TARGET_FILE="$CONFIG_DIR/starship.toml"
+
+    BASE_ACCENT="${ACCENT%_br}"
+
+    COLORS_ARRAY=("red" "orange" "yellow" "green" "aqua" "blue" "purple")
+
+    
+    START_INDEX=-1
+    for i in "${!COLORS_ARRAY[@]}"; do
+        if [[ "${COLORS_ARRAY[$i]}" == "$BASE_ACCENT" ]]; then
+            START_INDEX=$i
+            break
+        fi
+    done
+
+    if [[ $START_INDEX -eq -1 ]]; then
+        exit 1
+    fi
+    
+    if [[ -f "$TEMPLATE_FILE" ]]; then
+        cp "$TEMPLATE_FILE" "$TARGET_FILE"
+        sed -i "/^\[os\]/,/^\[/ s/bg:color_[a-zA-Z0-9_]*/bg:color_${COLORS_ARRAY[$START_INDEX]}/" "$TARGET_FILE"            
+        sed -i "/^\[username\]/,/^\[/ s/bg:color_[a-zA-Z0-9_]*/bg:color_${COLORS_ARRAY[$START_INDEX]}/" "$TARGET_FILE"
+        
+        sed -i "s/\[\](color_[a-zA-Z0-9_]*)\\\\/[](color_${COLORS_ARRAY[$START_INDEX]})\\\\/" "$TARGET_FILE"
+        sed -i "/\\\$username/,/\\\$directory/ s/\(\[\](bg:color_[a-zA-Z0-9_]* \)fg:color_[a-zA-Z0-9_]*/\1fg:color_${COLORS_ARRAY[$START_INDEX]}/" "$TARGET_FILE" 
+        sed -i "/\\\$username/,/\\\$directory/ s/\[\](bg:color_[a-zA-Z0-9_]*/[](bg:color_${COLORS_ARRAY[($START_INDEX + 1) % ${#COLORS_ARRAY[@]}]}/" "$TARGET_FILE"
+
+        sed -i "/^\[directory\]/,/^\[/ s/bg:color_[a-zA-Z0-9_]*/bg:color_${COLORS_ARRAY[($START_INDEX + 1) % ${#COLORS_ARRAY[@]}]}/" "$TARGET_FILE"
+        sed -i "/\\\$directory/,/\\\$git_branch/ s/\(\[\](bg:color_[a-zA-Z0-9_]* \)fg:color_[a-zA-Z0-9_]*/\1fg:color_${COLORS_ARRAY[($START_INDEX + 1) % ${#COLORS_ARRAY[@]}]}/" "$TARGET_FILE" 
+        sed -i "/\\\$directory/,/\\\$git_branch/ s/\[\](bg:color_[a-zA-Z0-9_]*/[](bg:color_${COLORS_ARRAY[($START_INDEX + 3) % ${#COLORS_ARRAY[@]}]}/" "$TARGET_FILE"
+
+        sed -i "/^\[git_branch\]/,/^\[/ s/bg:color_[a-zA-Z0-9_]*/bg:color_${COLORS_ARRAY[($START_INDEX + 3) % ${#COLORS_ARRAY[@]}]}/" "$TARGET_FILE"
+        sed -i "/^\[git_status\]/,/^\[/ s/bg:color_[a-zA-Z0-9_]*/bg:color_${COLORS_ARRAY[($START_INDEX + 3) % ${#COLORS_ARRAY[@]}]}/" "$TARGET_FILE"
+        sed -i "/\\\$git_status/,/\\\$c/ s/\(\[\](bg:color_[a-zA-Z0-9_]* \)fg:color_[a-zA-Z0-9_]*/\1fg:color_${COLORS_ARRAY[($START_INDEX + 3) % ${#COLORS_ARRAY[@]}]}/" "$TARGET_FILE"
+        sed -i "/\\\$git_status/,/\\\$c/ s/\[\](bg:color_[a-zA-Z0-9_]*/[](bg:color_${COLORS_ARRAY[($START_INDEX + 4) % ${#COLORS_ARRAY[@]}]}/" "$TARGET_FILE"
+
+        sed -i "/\\\$python/,/\\\$docker_context/ s/\(\[\](bg:color_[a-zA-Z0-9_]* \)fg:color_[a-zA-Z0-9_]*/\1fg:color_${COLORS_ARRAY[($START_INDEX + 4) % ${#COLORS_ARRAY[@]}]}/" "$TARGET_FILE"
+        sed -i "/\\\$python/,/\\\$docker_context/ s/\[\](bg:color_[a-zA-Z0-9_]*/[](bg:color_bg1/" "$TARGET_FILE"
+    fi
+fi
+
+# -----------------------------------------------------
 # 7. Application: WAYBAR
 # -----------------------------------------------------
 if command -v waybar &> /dev/null; then
@@ -213,7 +260,7 @@ if command -v micro &> /dev/null; then
 fi
 
 # -----------------------------------------------------
-# 9. Application: MAKO 
+# 10. Application: MAKO 
 # -----------------------------------------------------
 if command -v mako &> /dev/null; then
     TEMPLATE_FILE="$DOTFILES/mako/.config/mako/${MODE}" 
