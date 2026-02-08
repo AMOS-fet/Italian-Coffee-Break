@@ -113,6 +113,7 @@ fi
 # -----------------------------------------------------
 # 5. Application: ROFI
 # -----------------------------------------------------
+
 if command -v rofi &> /dev/null; then
     TEMPLATE_FILE="$DOTFILES/rofi/.config/rofi/config-${MODE}.rasi"
     TARGET_FILE="$CONFIG_DIR/rofi/config.rasi"
@@ -130,6 +131,7 @@ fi
 # -----------------------------------------------------
 # 6. Application: KITTY
 # -----------------------------------------------------
+
 if command -v kitty &> /dev/null; then
     TEMPLATE_FILE="$DOTFILES/kitty/.config/kitty/theme-${MODE}.conf"
     TARGET_FILE="$CONFIG_DIR/kitty/theme.conf"
@@ -161,6 +163,7 @@ fi
 # -----------------------------------------------------
 # 7. Application: STARSHIP 
 # -----------------------------------------------------
+
 if command -v starship &> /dev/null; then
     TEMPLATE_FILE="$DOTFILES/starship/.config/starship-${MODE}.toml"
     TARGET_FILE="$CONFIG_DIR/starship.toml"
@@ -206,8 +209,334 @@ if command -v starship &> /dev/null; then
 fi
 
 # -----------------------------------------------------
-# 7. Application: WAYBAR
+# 8. APPLICATION: BTOP 
 # -----------------------------------------------------
+
+if command -v btop &> /dev/null; then
+    TEMPLATE_FILE="$DOTFILES/btop/.config/btop/themes/${MODE}.theme"
+    TARGET_FILE="$CONFIG_DIR/btop/themes/current.theme"
+    BTOP_CONF_FILE="$CONFIG_DIR/btop/btop.conf"
+
+    if [[ -f "$TEMPLATE_FILE" ]]; then
+        mkdir -p "$(dirname "$TARGET_FILE")"
+        cp "$TEMPLATE_FILE" "$TARGET_FILE"
+
+        if [[ -f "$BTOP_CONF_FILE" ]]; then
+             sed -i "s|^color_theme =.*|color_theme = \"$TARGET_FILE\"|" "$BTOP_CONF_FILE"
+        fi
+    fi
+fi
+
+# -----------------------------------------------------
+# 9. SYSTEM: GTK THEME 
+# -----------------------------------------------------
+
+if [ "$MODE" == "dark" ]; then
+    THEME_NAME="Colloid-Dark"
+    ICON_THEME="WhiteSur-dark"       
+    COLOR_SCHEME="prefer-dark"
+    GTK_PREFER_DARK="1"
+    GS_PREFER_DARK="true"
+else
+    THEME_NAME="Colloid-Light"
+    ICON_THEME="WhiteSur-light"       
+    COLOR_SCHEME="default"
+    GTK_PREFER_DARK="0"
+    GS_PREFER_DARK="false"
+fi
+
+CURSOR_THEME="${TARGET_CURSOR:-phinger-cursors-light}"
+
+if [[ ! -d "/usr/share/icons/$ICON_THEME" ]] && \
+   [[ ! -d "$HOME/.local/share/icons/$ICON_THEME" ]] && \
+   [[ ! -d "$HOME/.icons/$ICON_THEME" ]]; then
+    ICON_THEME="Adwaita"
+fi
+
+if [[ ! -d "/usr/share/icons/$CURSOR_THEME" ]] && \
+   [[ ! -d "$HOME/.local/share/icons/$CURSOR_THEME" ]] && \
+   [[ ! -d "$HOME/.icons/$CURSOR_THEME" ]]; then
+    CURSOR_THEME="Adwaita"
+fi
+
+
+GTK3_FILE="$CONFIG_DIR/gtk-3.0/settings.ini"
+GTK2_FILE="$HOME/.gtkrc-2.0"
+
+cat > "$GTK3_FILE" <<EOF
+[Settings]
+gtk-theme-name=$THEME_NAME
+gtk-icon-theme-name=$ICON_THEME
+gtk-font-name=SF Pro 11
+gtk-cursor-theme-name=$CURSOR_THEME
+gtk-cursor-theme-size=24
+gtk-toolbar-style=GTK_TOOLBAR_BOTH
+gtk-toolbar-icon-size=GTK_ICON_SIZE_LARGE_TOOLBAR
+gtk-button-images=1
+gtk-menu-images=1
+gtk-enable-event-sounds=1
+gtk-enable-input-feedback-sounds=1
+gtk-xft-antialias=1
+gtk-xft-hinting=1
+gtk-xft-hintstyle=hintslight
+gtk-application-prefer-dark-theme=$GTK_PREFER_DARK
+EOF
+
+cat > "$GTK2_FILE" <<EOF
+gtk-theme-name="$THEME_NAME"
+gtk-icon-theme-name="$ICON_THEME"
+gtk-font-name="SF Pro 11"
+gtk-cursor-theme-name="$CURSOR_THEME"
+gtk-cursor-theme-size=0
+gtk-toolbar-style=GTK_TOOLBAR_BOTH
+gtk-toolbar-icon-size=GTK_ICON_SIZE_LARGE_TOOLBAR
+gtk-button-images=1
+gtk-menu-images=1
+gtk-enable-event-sounds=1
+gtk-enable-input-feedback-sounds=1
+gtk-xft-antialias=1
+gtk-xft-hinting=1
+gtk-xft-hintstyle=hintslight
+EOF
+
+if command -v gsettings &> /dev/null; then
+    gsettings set org.gnome.desktop.interface gtk-theme "$THEME_NAME"
+    gsettings set org.gnome.desktop.interface icon-theme "$ICON_THEME"
+    gsettings set org.gnome.desktop.interface cursor-theme "$CURSOR_THEME"
+    gsettings set org.gnome.desktop.interface color-scheme "$COLOR_SCHEME"
+    gsettings set org.gnome.desktop.interface gtk-application-prefer-dark-theme "$GS_PREFER_DARK"
+
+    if gsettings list-schemas | grep -q "org.cinnamon.desktop.interface"; then
+        gsettings set org.cinnamon.desktop.interface gtk-theme "$THEME_NAME"
+        gsettings set org.cinnamon.desktop.interface gtk-application-prefer-dark-theme "$GS_PREFER_DARK"
+        gsettings set org.cinnamon.desktop.interface icon-theme "$ICON_THEME"
+        gsettings set org.cinnamon.desktop.interface cursor-theme "$CURSOR_THEME"
+    fi
+fi
+
+export GTK_THEME="$THEME_NAME"
+if command -v hyprctl &> /dev/null; then
+    hyprctl setenv GTK_THEME "$THEME_NAME"
+fi
+
+if pgrep -x "xsettingsd" > /dev/null; then killall -HUP xsettingsd; fi
+if pgrep -x "nemo" > /dev/null; then nemo -q >/dev/null 2>&1; fi
+
+
+declare -A COLORS_HEX
+COLORS_HEX[red]="#CA2420"
+COLORS_HEX[green]="#98971C"
+COLORS_HEX[yellow]="#D89822"
+COLORS_HEX[blue]="#448385"
+COLORS_HEX[purple]="#A962AF"
+COLORS_HEX[aqua]="#679B69"
+COLORS_HEX[orange]="#D75C0F"
+COLORS_HEX[gray]="#8F8173"
+COLORS_HEX[red_br]="#F94835"
+COLORS_HEX[green_br]="#B7B827"
+COLORS_HEX[yellow_br]="#F9BB31"
+COLORS_HEX[blue_br]="#83A497"
+COLORS_HEX[purple_br]="#D184CC"
+COLORS_HEX[aqua_br]="#8EBE7A"
+COLORS_HEX[orange_br]="#FE7C0D"
+COLORS_HEX[gray_br]="#A89985"
+
+NEW_HEX="${COLORS_HEX[$ACCENT]}"
+if [ -z "$NEW_HEX" ]; then
+    BASE_ACCENT="${ACCENT%_br}"
+    NEW_HEX="${COLORS_HEX[$BASE_ACCENT]}"
+fi
+if [ -z "$NEW_HEX" ]; then NEW_HEX="#D75C0F"; fi
+
+TEXT_COLOR="#F9EDD2" 
+if [ "$MODE" == "light" ]; then TEXT_COLOR="#282828"; fi
+
+GTK3_CSS="$HOME/.config/gtk-3.0/gtk.css"
+GTK4_CSS="$HOME/.config/gtk-4.0/gtk.css"
+mkdir -p "$(dirname "$GTK3_CSS")"
+mkdir -p "$(dirname "$GTK4_CSS")"
+
+echo "@define-color accent_color $NEW_HEX;
+@define-color accent_bg_color $NEW_HEX;
+@define-color theme_selected_bg_color $NEW_HEX;
+@define-color theme_selected_fg_color $TEXT_COLOR;
+selection {
+    background-color: $NEW_HEX;
+    color: $TEXT_COLOR;
+}" > "$GTK4_CSS"
+
+
+cat > "$GTK3_CSS" <<EOF
+@define-color accent_color $NEW_HEX;
+@define-color accent_bg_color $NEW_HEX;
+@define-color theme_selected_bg_color $NEW_HEX;
+@define-color theme_selected_fg_color $TEXT_COLOR;
+
+selection,
+*:selected,
+entry selection,
+textview text selection,
+label selection,
+flowbox flowboxchild:selected {
+    background-color: $NEW_HEX;
+    color: $TEXT_COLOR;
+}
+
+window entry:focus,
+window .entry:focus,
+window combobox entry:focus,
+.background entry:focus,
+notebook entry:focus {
+    border-color: $NEW_HEX;
+    box-shadow: inset 0 0 0 1px $NEW_HEX;
+    caret-color: $NEW_HEX;
+}
+
+scale trough,
+scale.marks trough {
+    background-image: none;
+    background-color: rgba(60, 60, 60, 0.4); 
+    border-radius: 6px;
+    min-height: 6px; 
+    min-width: 6px; 
+    margin: 6px 0;   
+}
+
+scale highlight,
+scale trough highlight,
+scale:focus highlight,
+scale.marks highlight,
+scale.marks trough highlight,
+scale fill,
+scale.marks fill {
+    background-image: none;
+    background-color: $NEW_HEX;
+    border-radius: 6px;
+    min-height: 6px;
+    min-width: 6px;
+}
+
+scale slider,
+scale.marks slider,
+scale:hover slider {
+    background-image: none;
+    background-color: $NEW_HEX;
+    border-color: $NEW_HEX;
+    border-radius: 100%;
+    color: $NEW_HEX;
+    min-height: 18px; 
+    min-width: 18px;
+    margin: -6px;     
+    box-shadow: 0 1px 2px rgba(0,0,0,0.3); 
+}
+
+progressbar progress,
+progressbar.osd progress {
+    background-image: none;
+    background-color: $NEW_HEX;
+    border-color: $NEW_HEX;
+}
+
+levelbar block.high,
+levelbar block.low,
+levelbar block.filled {
+    background-image: none;
+    background-color: $NEW_HEX;
+    border-color: $NEW_HEX;
+}
+
+treeview.view:selected,
+column-header .title:selected,
+row:selected {
+    background-color: $NEW_HEX;
+    color: $TEXT_COLOR;
+}
+check:checked,
+radio:checked {
+    background-color: $NEW_HEX;
+    color: $TEXT_COLOR;
+    border-color: $NEW_HEX;
+}
+switch:checked {
+    background-color: $NEW_HEX;
+    border-color: $NEW_HEX;
+}
+switch:checked slider {
+    background-color: $TEXT_COLOR;
+}
+
+button.suggested-action,
+button.destructive-action,
+button.text-button.suggested-action {
+    background-image: none;
+    background-color: $NEW_HEX;
+    border-color: $NEW_HEX;
+    color: $TEXT_COLOR;
+}
+button.link, link {
+    color: $NEW_HEX;
+}
+
+notebook > header tab:checked {
+    box-shadow: inset 0 -3px $NEW_HEX;
+}
+EOF
+
+if command -v gsettings &> /dev/null; then
+   CURRENT_THEME=$(gsettings get org.gnome.desktop.interface gtk-theme)
+   CURRENT_THEME="${CURRENT_THEME%\'}"
+   CURRENT_THEME="${CURRENT_THEME#\'}"
+   
+   gsettings set org.gnome.desktop.interface gtk-theme "Adwaita"
+   sleep 0.1
+   gsettings set org.gnome.desktop.interface gtk-theme "$CURRENT_THEME"
+fi
+
+# -----------------------------------------------------
+# 10. SYSTEM: HYPRLAND CURSOR & ICONS
+# -----------------------------------------------------
+
+HYPR_CONF="$CONFIG_DIR/hypr/hyprland.conf"
+CURSOR_SIZE=24
+
+if [[ -f "$HYPR_CONF" ]]; then
+    if [[ -d "/usr/share/icons/$CURSOR_THEME" ]] || \
+       [[ -d "$HOME/.local/share/icons/$CURSOR_THEME" ]] || \
+       [[ -d "$HOME/.icons/$CURSOR_THEME" ]]; then
+        
+       if grep -q "env = XCURSOR_THEME," "$HYPR_CONF"; then
+           sed -i "s|^env = XCURSOR_THEME,.*|env = XCURSOR_THEME,$CURSOR_THEME|" "$HYPR_CONF"
+       fi
+        
+       if grep -q "env = XCURSOR_SIZE," "$HYPR_CONF"; then
+           sed -i "s|^env = XCURSOR_SIZE,.*|env = XCURSOR_SIZE,$CURSOR_SIZE|" "$HYPR_CONF"
+       fi
+ 
+       if command -v hyprctl &> /dev/null; then
+           hyprctl setcursor "$CURSOR_THEME" $CURSOR_SIZE
+           hyprctl setenv XCURSOR_THEME "$CURSOR_THEME"
+           hyprctl setenv XCURSOR_SIZE "$CURSOR_SIZE"
+       fi   
+    fi
+
+    if [[ -d "/usr/share/icons/$ICON_THEME" ]] || \
+       [[ -d "$HOME/.local/share/icons/$ICON_THEME" ]] || \
+       [[ -d "$HOME/.icons/$ICON_THEME" ]]; then
+       
+       if grep -q "env = GTK_ICON_THEME," "$HYPR_CONF"; then
+           sed -i "s|^env = GTK_ICON_THEME,.*|env = GTK_ICON_THEME,$ICON_THEME|" "$HYPR_CONF"
+       fi
+        
+       if command -v hyprctl &> /dev/null; then
+           hyprctl setenv GTK_ICON_THEME "$ICON_THEME"
+       fi
+    fi
+fi
+
+# -----------------------------------------------------
+# 11. Application: WAYBAR
+# -----------------------------------------------------
+
 if command -v waybar &> /dev/null; then
     TEMPLATE_FILE="$DOTFILES/waybar/.config/waybar/colors-${MODE}.css"
     TARGET_FILE="$CONFIG_DIR/waybar/colors.css"
@@ -239,8 +568,9 @@ if command -v waybar &> /dev/null; then
 fi
 
 # -----------------------------------------------------
-# 8. Application: MICRO EDITOR
+# 12. Application: MICRO EDITOR
 # -----------------------------------------------------
+
 if command -v micro &> /dev/null; then
     
     TEMPLATE_FILE="$DOTFILES/micro/.config/micro/colorschemes/gruvbox-${MODE}.micro"
@@ -260,8 +590,9 @@ if command -v micro &> /dev/null; then
 fi
 
 # -----------------------------------------------------
-# 10. Application: MAKO 
+# 13. Application: MAKO 
 # -----------------------------------------------------
+
 if command -v mako &> /dev/null; then
     TEMPLATE_FILE="$DOTFILES/mako/.config/mako/${MODE}" 
     TARGET_FILE="$HOME/.config/mako/config"

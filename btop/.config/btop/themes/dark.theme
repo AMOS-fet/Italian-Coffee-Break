@@ -6,64 +6,64 @@
 # -----------------------------------------------------
 # 1. Interface
 # -----------------------------------------------------
-theme[main_bg]="#282828"     
-theme[main_fg]="#F9EDD2"     
-theme[title]="#F9EDD2"       
-theme[hi_fg]="#F94835"       
-theme[selected_bg]="#FE7C0D" 
-theme[selected_fg]="#282828" 
-theme[inactive_fg]="#A89985" 
-theme[graph_text]="#F9EDD2"  
+theme[main_bg]="#F9EDD2"    
+theme[main_fg]="#282828"    
+theme[title]="#282828"      
+theme[hi_fg]="#CA2420"      
+theme[selected_bg]="#D75C0F" 
+theme[selected_fg]="#F9EDD2" 
+theme[inactive_fg]="#8F8173" 
+theme[graph_text]="#282828"  
 
 # -----------------------------------------------------
 # 2. Borders
 # -----------------------------------------------------
-theme[proc_misc]="#F9EDD2"  
-theme[cpu_box]="#F9EDD2"    
-theme[mem_box]="#F9EDD2"    
-theme[net_box]="#F9EDD2"    
-theme[proc_box]="#F9EDD2"   
-theme[div_line]="#A89985"   
+theme[proc_misc]="#282828"
+theme[cpu_box]="#282828"    
+theme[mem_box]="#282828"
+theme[net_box]="#282828"
+theme[proc_box]="#282828"
+theme[div_line]="#8F8173"
 
 # -----------------------------------------------------
 # 3. Gradients
 # -----------------------------------------------------
 # temp
-theme[temp_start]="#B7B827" 
-theme[temp_mid]="#F9BB31"   
-theme[temp_end]="#F94835"   
+theme[temp_start]="#98971C"
+theme[temp_mid]="#D89822"
+theme[temp_end]="#CA2420"
 
 # cpu
-theme[cpu_start]="#B7B827"
-theme[cpu_mid]="#F9BB31"
-theme[cpu_end]="#F94835"
+theme[cpu_start]="#98971C"
+theme[cpu_mid]="#D89822"
+theme[cpu_end]="#CA2420"
 
 # memory
-theme[free_start]="#B7B827"
-theme[free_mid]="#F9BB31"
-theme[free_end]="#F94835"
+theme[free_start]="#98971C"
+theme[free_mid]="#D89822"
+theme[free_end]="#CA2420"
 
 # cache
-theme[cached_start]="#8EBE7A"
-theme[cached_mid]="#8EBE7A"
-theme[cached_end]="#8EBE7A"
+theme[cached_start]="#679B69"
+theme[cached_mid]="#679B69"
+theme[cached_end]="#679B69"
 
 # available
-theme[available_start]="#F9BB31"
-theme[available_mid]="#F9BB31"
-theme[available_end]="#F9BB31"
+theme[available_start]="#D89822"
+theme[available_mid]="#D89822"
+theme[available_end]="#D89822"
 
 # used
-theme[used_start]="#F94835"
-theme[used_mid]="#F94835"
-theme[used_end]="#F94835"
+theme[used_start]="#CA2420"
+theme[used_mid]="#CA2420"
+theme[used_end]="#CA2420"
 
-# download
-theme[download_start]="#83A497"
-theme[download_mid]="#83A497"
-theme[download_end]="#83A497"
+# Network Download
+theme[download_start]="#448385"
+theme[download_mid]="#448385"
+theme[download_end]="#448385"
 
-# upload
-theme[upload_start]="#D184CC"
-theme[upload_mid]="#D184CC"
-theme[upload_end]="#D184CC"
+# Network Upload
+theme[upload_start]="#A962AF"
+theme[upload_mid]="#A962AF"
+theme[upload_end]="#A962AF"
