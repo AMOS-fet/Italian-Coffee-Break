@@ -209,7 +209,7 @@ if command -v starship &> /dev/null; then
 fi
 
 # -----------------------------------------------------
-# 8. APPLICATION: BTOP 
+# 8. Application: BTOP 
 # -----------------------------------------------------
 
 if command -v btop &> /dev/null; then
@@ -228,7 +228,43 @@ if command -v btop &> /dev/null; then
 fi
 
 # -----------------------------------------------------
-# 9. SYSTEM: GTK THEME 
+# 9. Application: Librewolf
+# -----------------------------------------------------
+
+if command -v librewolf &> /dev/null; then
+    LIBREWOLF_DIR="$(find "$HOME/.librewolf" -maxdepth 1 -type d \( -name "*.default-default" -o -name "*.default" -o -name "*.default-release" \) | head -n 1)"
+    
+    if [[ -z "$LIBREWOLF_DIR" ]]; then
+        echo "Errore: Profilo LibreWolf non trovato. Avvia LibreWolf almeno una volta."
+    else
+        TEMPLATE_FILE1="$DOTFILES/librewolf/.librewolf/chrome/userChrome-$MODE.css"
+        TEMPLATE_FILE2="$DOTFILES/librewolf/.librewolf/chrome/userContent-$MODE.css"  
+        TARGET_FILE1="$LIBREWOLF_DIR/chrome/userChrome.css"
+        TARGET_FILE2="$LIBREWOLF_DIR/chrome/userContent.css"
+        
+        if [[ -f "$TEMPLATE_FILE1" ]]; then
+            mkdir -p "$(dirname "$TARGET_FILE1")"
+            if cp "$TEMPLATE_FILE1" "$TARGET_FILE1"; then
+                BASE_ACCENT="${ACCENT%_br}"
+                
+                if [ "$MODE" == "dark" ]; then
+                    BASE_ACCENT="${BASE_ACCENT}_br"
+                fi
+                
+                sed -i "s|^[[:space:]]*--gruvbox-border:.*|  --gruvbox-border: ${!BASE_ACCENT};|" "$TARGET_FILE1"
+            fi
+        fi
+
+        if [[ -f "$TEMPLATE_FILE2" ]]; then
+            mkdir -p "$(dirname "$TARGET_FILE2")"
+            cp "$TEMPLATE_FILE2" "$TARGET_FILE2"
+        fi
+    fi
+fi
+
+
+# -----------------------------------------------------
+# 10. SYSTEM: GTK THEME 
 # -----------------------------------------------------
 
 if [ "$MODE" == "dark" ]; then
@@ -493,7 +529,7 @@ if command -v gsettings &> /dev/null; then
 fi
 
 # -----------------------------------------------------
-# 10. SYSTEM: HYPRLAND CURSOR & ICONS
+# 11. System: HYPRLAND CURSOR & ICONS
 # -----------------------------------------------------
 
 HYPR_CONF="$CONFIG_DIR/hypr/hyprland.conf"
@@ -534,7 +570,7 @@ if [[ -f "$HYPR_CONF" ]]; then
 fi
 
 # -----------------------------------------------------
-# 11. Application: WAYBAR
+# 12. Application: WAYBAR
 # -----------------------------------------------------
 
 if command -v waybar &> /dev/null; then
@@ -568,7 +604,7 @@ if command -v waybar &> /dev/null; then
 fi
 
 # -----------------------------------------------------
-# 12. Application: MICRO EDITOR
+# 13. Application: MICRO EDITOR
 # -----------------------------------------------------
 
 if command -v micro &> /dev/null; then
@@ -590,7 +626,7 @@ if command -v micro &> /dev/null; then
 fi
 
 # -----------------------------------------------------
-# 13. Application: MAKO 
+# 14. Application: MAKO 
 # -----------------------------------------------------
 
 if command -v mako &> /dev/null; then

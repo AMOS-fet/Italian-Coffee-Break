@@ -157,7 +157,7 @@
         "tooltip-format-ethernet": "  Ethernet Connection\n  Interface: {ifname}\n  Private IP: {ipaddr}",
         "tooltip-format-disconnected": "Disconnected",
         "tooltip-format-disabled": "Disabled",
-        "on-click": "kitty -e nmtui",
+        "on-click": "hyprctl dispatch exec '[float; size 600 700; center; pin] kitty --class impala-float -e impala'",
         "on-click-right": "rfkill toggle wifi"
     },
 

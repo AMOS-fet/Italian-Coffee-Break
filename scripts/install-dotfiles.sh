@@ -17,12 +17,15 @@ DOTFILES_DIR="$HOME/dotfiles"
 PACKAGES=(
     "hyprland:Tiling Window Manager"
     "kitty:GPU Accelerated Terminal"
-    "hyprpaper:Wallpaper Utility"
+    "librewolf-bin:Community-mantained fork of firefox"
+    "swww:Wallpaper Utility"
     "mako:Notification Daemon"
     "rofi:Application Launcher"
     "starship:Cross-shell Prompt"
     "waybar:Status Bar for Wayland"
     "micro:Intuitive Terminal Editor"
+    "fastfetch:System information tool"
+    "impala:TUI wifi manager"
 )
 
 
@@ -110,7 +113,7 @@ _install_colloid_manual() {
         echo "  Colloid Theme installed."
         rm -rf "$temp_dir"
     else
-        echo "❌ Error cloning Colloid repo."
+        echo "  Error cloning Colloid repo."
     fi
 }
 
@@ -129,7 +132,7 @@ _install_whitesur_manual() {
         echo "  WhiteSur Icons installed."
         rm -rf "$temp_dir"
     else
-        echo "❌ Error cloning WhiteSur repo."
+        echo "  Error cloning WhiteSur repo."
     fi
 }
 
@@ -317,4 +320,7 @@ for line in $ALL_SELECTIONS; do
     echo ""
 done
 
+bash $HOME/dotfiles/scripts/theme-switch.sh dark orange
+
 _print_centered_header "SUCCESS" "All tasks completed successfully!"
+
