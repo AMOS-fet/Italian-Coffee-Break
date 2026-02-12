@@ -1,0 +1,14 @@
+
+@-moz-document url-prefix("about:") {
+    body, html, #newtab-window {
+        background-color: #282828 !important;
+        color: #F9EDD2 !important;
+        font-family: "SF Pro Display", sans-serif !important;
+    }
+}
+
+
+/* :root {
+    scrollbar-color: #fe8019 #282828 !important;
+    scrollbar-width: thin !important;
+} */

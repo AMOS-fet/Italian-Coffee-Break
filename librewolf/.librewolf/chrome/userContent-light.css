@@ -1,0 +1,20 @@
+
+@-moz-document url-prefix("about:") {
+    body, html, #newtab-window {
+        background-color: #F9EDD2 !important; /* Cream Soft */
+        color: #282828 !important;             /* Dark Gray */
+        font-family: "SF Pro Display", sans-serif !important;
+    }
+    
+    .logo, .wordmark {
+        filter: invert(1) !important;
+    }
+}
+
+/* 
+:root {
+    
+    scrollbar-color: #af3a03 #fbf1c7 !important;
+    scrollbar-width: thin !important;
+}
+*/

@@ -1,0 +1,90 @@
+/* -----------------------------------------------------
+ * File: userChrome-dark.css
+ * Description: LibreWolf UI customization (Gruvbox Dark)
+ * Author: AMOS-fet
+ * ----------------------------------------------------- */
+
+:root {
+    /* GRUVBOX DARK PALETTE */
+    --gruvbox-bg: #282828;
+    --gruvbox-fg: #F9EDD2;
+    --gruvbox-active: #504945;
+    --gruvbox-border: #fe8019;
+
+    /* -------------------------------------------------
+     * 1. CORE VARIABLES
+     * ------------------------------------------------- */
+    /* Firefox Revamp specific variables */
+    --sidebar-background-color: var(--gruvbox-bg) !important;
+    --sidebar-text-color: var(--gruvbox-fg) !important;
+    --sidebar-border-color: var(--gruvbox-active) !important;
+
+    /* Legacy variables (fallback) */
+    --lwt-sidebar-background-color: var(--gruvbox-bg) !important;
+    --lwt-sidebar-text-color: var(--gruvbox-fg) !important;
+    
+    /* Toolbar & Tab consistency */
+    --toolbar-bgcolor: var(--gruvbox-bg) !important;
+    --tab-selected-bgcolor: var(--gruvbox-active) !important;
+}
+
+/* -----------------------------------------------------
+ * 2. CONTAINER BACKGROUNDS
+ * ----------------------------------------------------- */
+
+#sidebar-box, 
+#sidebar-header, 
+#sidebar-main, 
+#sidebar,
+.sidebar-panel {
+    background-color: var(--gruvbox-bg) !important;
+    color: var(--gruvbox-fg) !important;
+}
+
+#sidebar-box {
+    border-right: 1px solid var(--gruvbox-active) !important;
+}
+
+/* -----------------------------------------------------
+ * 3. HIDE NATIVE TABS
+ * ----------------------------------------------------- */
+ 
+#TabsToolbar {
+    visibility: collapse !important;
+}
+
+/* -----------------------------------------------------
+ * 4. UI CLEANUP
+ * ----------------------------------------------------- */
+ 
+#sidebar-header { display: none !important; }
+.titlebar-buttonbox-container { display: none !important; }
+
+/* -----------------------------------------------------
+ * 5. NAVIGATION BAR TWEAKS
+ * ----------------------------------------------------- */
+
+#nav-bar {
+    padding-left: 10px !important;
+    border-top: none !important;
+    box-shadow: none !important;
+    background-color: var(--gruvbox-bg) !important;
+}
+
+
+#sidebar-splitter {
+    border-color: var(--gruvbox-bg) !important;
+    background-color: var(--gruvbox-bg) !important;
+    opacity: 0 !important; 
+    min-width: 0px !important;
+}
+
+/* -----------------------------------------------------
+ * 6. ICON VISIBILITY FIX (DARK MODE)
+ * ----------------------------------------------------- */
+
+.tab-icon-image,
+.bookmark-item > .toolbarbutton-icon,
+image.sidebar-placesTreechildren {
+    filter: drop-shadow(0px 0px 1px var(--gruvbox-fg)) !important;
+}
