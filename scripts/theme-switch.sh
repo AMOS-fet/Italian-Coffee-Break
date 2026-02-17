@@ -182,29 +182,29 @@ if command -v starship &> /dev/null; then
     done
 
     if [[ $START_INDEX -eq -1 ]]; then
-        exit 1
-    fi
+        echo " Error: Accent color not supported!"
+    else
+        if [[ -f "$TEMPLATE_FILE" ]]; then
+            cp "$TEMPLATE_FILE" "$TARGET_FILE"
+            sed -i "/^\[os\]/,/^\[/ s/bg:color_[a-zA-Z0-9_]*/bg:color_${COLORS_ARRAY[$START_INDEX]}/" "$TARGET_FILE"            
+            sed -i "/^\[username\]/,/^\[/ s/bg:color_[a-zA-Z0-9_]*/bg:color_${COLORS_ARRAY[$START_INDEX]}/" "$TARGET_FILE"
+            
+            sed -i "s/\[\](color_[a-zA-Z0-9_]*)\\\\/[](color_${COLORS_ARRAY[$START_INDEX]})\\\\/" "$TARGET_FILE"
+            sed -i "/\\\$username/,/\\\$directory/ s/\(\[\](bg:color_[a-zA-Z0-9_]* \)fg:color_[a-zA-Z0-9_]*/\1fg:color_${COLORS_ARRAY[$START_INDEX]}/" "$TARGET_FILE" 
+            sed -i "/\\\$username/,/\\\$directory/ s/\[\](bg:color_[a-zA-Z0-9_]*/[](bg:color_${COLORS_ARRAY[($START_INDEX + 1) % ${#COLORS_ARRAY[@]}]}/" "$TARGET_FILE"
     
-    if [[ -f "$TEMPLATE_FILE" ]]; then
-        cp "$TEMPLATE_FILE" "$TARGET_FILE"
-        sed -i "/^\[os\]/,/^\[/ s/bg:color_[a-zA-Z0-9_]*/bg:color_${COLORS_ARRAY[$START_INDEX]}/" "$TARGET_FILE"            
-        sed -i "/^\[username\]/,/^\[/ s/bg:color_[a-zA-Z0-9_]*/bg:color_${COLORS_ARRAY[$START_INDEX]}/" "$TARGET_FILE"
-        
-        sed -i "s/\[\](color_[a-zA-Z0-9_]*)\\\\/[](color_${COLORS_ARRAY[$START_INDEX]})\\\\/" "$TARGET_FILE"
-        sed -i "/\\\$username/,/\\\$directory/ s/\(\[\](bg:color_[a-zA-Z0-9_]* \)fg:color_[a-zA-Z0-9_]*/\1fg:color_${COLORS_ARRAY[$START_INDEX]}/" "$TARGET_FILE" 
-        sed -i "/\\\$username/,/\\\$directory/ s/\[\](bg:color_[a-zA-Z0-9_]*/[](bg:color_${COLORS_ARRAY[($START_INDEX + 1) % ${#COLORS_ARRAY[@]}]}/" "$TARGET_FILE"
-
-        sed -i "/^\[directory\]/,/^\[/ s/bg:color_[a-zA-Z0-9_]*/bg:color_${COLORS_ARRAY[($START_INDEX + 1) % ${#COLORS_ARRAY[@]}]}/" "$TARGET_FILE"
-        sed -i "/\\\$directory/,/\\\$git_branch/ s/\(\[\](bg:color_[a-zA-Z0-9_]* \)fg:color_[a-zA-Z0-9_]*/\1fg:color_${COLORS_ARRAY[($START_INDEX + 1) % ${#COLORS_ARRAY[@]}]}/" "$TARGET_FILE" 
-        sed -i "/\\\$directory/,/\\\$git_branch/ s/\[\](bg:color_[a-zA-Z0-9_]*/[](bg:color_${COLORS_ARRAY[($START_INDEX + 3) % ${#COLORS_ARRAY[@]}]}/" "$TARGET_FILE"
-
-        sed -i "/^\[git_branch\]/,/^\[/ s/bg:color_[a-zA-Z0-9_]*/bg:color_${COLORS_ARRAY[($START_INDEX + 3) % ${#COLORS_ARRAY[@]}]}/" "$TARGET_FILE"
-        sed -i "/^\[git_status\]/,/^\[/ s/bg:color_[a-zA-Z0-9_]*/bg:color_${COLORS_ARRAY[($START_INDEX + 3) % ${#COLORS_ARRAY[@]}]}/" "$TARGET_FILE"
-        sed -i "/\\\$git_status/,/\\\$c/ s/\(\[\](bg:color_[a-zA-Z0-9_]* \)fg:color_[a-zA-Z0-9_]*/\1fg:color_${COLORS_ARRAY[($START_INDEX + 3) % ${#COLORS_ARRAY[@]}]}/" "$TARGET_FILE"
-        sed -i "/\\\$git_status/,/\\\$c/ s/\[\](bg:color_[a-zA-Z0-9_]*/[](bg:color_${COLORS_ARRAY[($START_INDEX + 4) % ${#COLORS_ARRAY[@]}]}/" "$TARGET_FILE"
-
-        sed -i "/\\\$python/,/\\\$docker_context/ s/\(\[\](bg:color_[a-zA-Z0-9_]* \)fg:color_[a-zA-Z0-9_]*/\1fg:color_${COLORS_ARRAY[($START_INDEX + 4) % ${#COLORS_ARRAY[@]}]}/" "$TARGET_FILE"
-        sed -i "/\\\$python/,/\\\$docker_context/ s/\[\](bg:color_[a-zA-Z0-9_]*/[](bg:color_bg1/" "$TARGET_FILE"
+            sed -i "/^\[directory\]/,/^\[/ s/bg:color_[a-zA-Z0-9_]*/bg:color_${COLORS_ARRAY[($START_INDEX + 1) % ${#COLORS_ARRAY[@]}]}/" "$TARGET_FILE"
+            sed -i "/\\\$directory/,/\\\$git_branch/ s/\(\[\](bg:color_[a-zA-Z0-9_]* \)fg:color_[a-zA-Z0-9_]*/\1fg:color_${COLORS_ARRAY[($START_INDEX + 1) % ${#COLORS_ARRAY[@]}]}/" "$TARGET_FILE" 
+            sed -i "/\\\$directory/,/\\\$git_branch/ s/\[\](bg:color_[a-zA-Z0-9_]*/[](bg:color_${COLORS_ARRAY[($START_INDEX + 3) % ${#COLORS_ARRAY[@]}]}/" "$TARGET_FILE"
+    
+            sed -i "/^\[git_branch\]/,/^\[/ s/bg:color_[a-zA-Z0-9_]*/bg:color_${COLORS_ARRAY[($START_INDEX + 3) % ${#COLORS_ARRAY[@]}]}/" "$TARGET_FILE"
+            sed -i "/^\[git_status\]/,/^\[/ s/bg:color_[a-zA-Z0-9_]*/bg:color_${COLORS_ARRAY[($START_INDEX + 3) % ${#COLORS_ARRAY[@]}]}/" "$TARGET_FILE"
+            sed -i "/\\\$git_status/,/\\\$c/ s/\(\[\](bg:color_[a-zA-Z0-9_]* \)fg:color_[a-zA-Z0-9_]*/\1fg:color_${COLORS_ARRAY[($START_INDEX + 3) % ${#COLORS_ARRAY[@]}]}/" "$TARGET_FILE"
+            sed -i "/\\\$git_status/,/\\\$c/ s/\[\](bg:color_[a-zA-Z0-9_]*/[](bg:color_${COLORS_ARRAY[($START_INDEX + 4) % ${#COLORS_ARRAY[@]}]}/" "$TARGET_FILE"
+    
+            sed -i "/\\\$python/,/\\\$docker_context/ s/\(\[\](bg:color_[a-zA-Z0-9_]* \)fg:color_[a-zA-Z0-9_]*/\1fg:color_${COLORS_ARRAY[($START_INDEX + 4) % ${#COLORS_ARRAY[@]}]}/" "$TARGET_FILE"
+            sed -i "/\\\$python/,/\\\$docker_context/ s/\[\](bg:color_[a-zA-Z0-9_]*/[](bg:color_bg1/" "$TARGET_FILE"
+        fi
     fi
 fi
 
@@ -235,7 +235,7 @@ if command -v librewolf &> /dev/null; then
     LIBREWOLF_DIR="$(find "$HOME/.librewolf" -maxdepth 1 -type d \( -name "*.default-default" -o -name "*.default" -o -name "*.default-release" \) | head -n 1)"
     
     if [[ -z "$LIBREWOLF_DIR" ]]; then
-        echo "Errore: Profilo LibreWolf non trovato. Avvia LibreWolf almeno una volta."
+        echo " Error: Librewolf profile not found!"
     else
         TEMPLATE_FILE1="$DOTFILES/librewolf/.librewolf/chrome/userChrome-$MODE.css"
         TEMPLATE_FILE2="$DOTFILES/librewolf/.librewolf/chrome/userContent-$MODE.css"  
@@ -245,13 +245,7 @@ if command -v librewolf &> /dev/null; then
         if [[ -f "$TEMPLATE_FILE1" ]]; then
             mkdir -p "$(dirname "$TARGET_FILE1")"
             if cp "$TEMPLATE_FILE1" "$TARGET_FILE1"; then
-                BASE_ACCENT="${ACCENT%_br}"
-                
-                if [ "$MODE" == "dark" ]; then
-                    BASE_ACCENT="${BASE_ACCENT}_br"
-                fi
-                
-                sed -i "s|^[[:space:]]*--gruvbox-border:.*|  --gruvbox-border: ${!BASE_ACCENT};|" "$TARGET_FILE1"
+                sed -i "s|^[[:space:]]*--gruvbox-border:.*|  --gruvbox-border: $FINAL_ACCENT_HEX;|" "$TARGET_FILE1"
             fi
         fi
 
@@ -340,11 +334,11 @@ if command -v gsettings &> /dev/null; then
     gsettings set org.gnome.desktop.interface icon-theme "$ICON_THEME"
     gsettings set org.gnome.desktop.interface cursor-theme "$CURSOR_THEME"
     gsettings set org.gnome.desktop.interface color-scheme "$COLOR_SCHEME"
-    gsettings set org.gnome.desktop.interface gtk-application-prefer-dark-theme "$GS_PREFER_DARK"
+    gsettings set org.gnome.desktop.interface gtk-application-prefer-dark-theme "$GS_PREFER_DARK" 2>/dev/null
 
     if gsettings list-schemas | grep -q "org.cinnamon.desktop.interface"; then
         gsettings set org.cinnamon.desktop.interface gtk-theme "$THEME_NAME"
-        gsettings set org.cinnamon.desktop.interface gtk-application-prefer-dark-theme "$GS_PREFER_DARK"
+        gsettings set org.cinnamon.desktop.interface gtk-application-prefer-dark-theme "$GS_PREFER_DARK" 2>/dev/null
         gsettings set org.cinnamon.desktop.interface icon-theme "$ICON_THEME"
         gsettings set org.cinnamon.desktop.interface cursor-theme "$CURSOR_THEME"
     fi
@@ -352,38 +346,14 @@ fi
 
 export GTK_THEME="$THEME_NAME"
 if command -v hyprctl &> /dev/null; then
-    hyprctl setenv GTK_THEME "$THEME_NAME"
+    hyprctl setenv GTK_THEME "$THEME_NAME" 2>/dev/null
 fi
 
 if pgrep -x "xsettingsd" > /dev/null; then killall -HUP xsettingsd; fi
 if pgrep -x "nemo" > /dev/null; then nemo -q >/dev/null 2>&1; fi
 
 
-declare -A COLORS_HEX
-COLORS_HEX[red]="#CA2420"
-COLORS_HEX[green]="#98971C"
-COLORS_HEX[yellow]="#D89822"
-COLORS_HEX[blue]="#448385"
-COLORS_HEX[purple]="#A962AF"
-COLORS_HEX[aqua]="#679B69"
-COLORS_HEX[orange]="#D75C0F"
-COLORS_HEX[gray]="#8F8173"
-COLORS_HEX[red_br]="#F94835"
-COLORS_HEX[green_br]="#B7B827"
-COLORS_HEX[yellow_br]="#F9BB31"
-COLORS_HEX[blue_br]="#83A497"
-COLORS_HEX[purple_br]="#D184CC"
-COLORS_HEX[aqua_br]="#8EBE7A"
-COLORS_HEX[orange_br]="#FE7C0D"
-COLORS_HEX[gray_br]="#A89985"
-
-NEW_HEX="${COLORS_HEX[$ACCENT]}"
-if [ -z "$NEW_HEX" ]; then
-    BASE_ACCENT="${ACCENT%_br}"
-    NEW_HEX="${COLORS_HEX[$BASE_ACCENT]}"
-fi
-if [ -z "$NEW_HEX" ]; then NEW_HEX="#D75C0F"; fi
-
+NEW_HEX="$FINAL_ACCENT_HEX"
 TEXT_COLOR="#F9EDD2" 
 if [ "$MODE" == "light" ]; then TEXT_COLOR="#282828"; fi
 
@@ -519,13 +489,10 @@ notebook > header tab:checked {
 EOF
 
 if command -v gsettings &> /dev/null; then
-   CURRENT_THEME=$(gsettings get org.gnome.desktop.interface gtk-theme)
-   CURRENT_THEME="${CURRENT_THEME%\'}"
-   CURRENT_THEME="${CURRENT_THEME#\'}"
-   
+   # Force theme refresh
    gsettings set org.gnome.desktop.interface gtk-theme "Adwaita"
    sleep 0.1
-   gsettings set org.gnome.desktop.interface gtk-theme "$CURRENT_THEME"
+   gsettings set org.gnome.desktop.interface gtk-theme "$THEME_NAME"
 fi
 
 # -----------------------------------------------------
@@ -549,9 +516,9 @@ if [[ -f "$HYPR_CONF" ]]; then
        fi
  
        if command -v hyprctl &> /dev/null; then
-           hyprctl setcursor "$CURSOR_THEME" $CURSOR_SIZE
-           hyprctl setenv XCURSOR_THEME "$CURSOR_THEME"
-           hyprctl setenv XCURSOR_SIZE "$CURSOR_SIZE"
+           hyprctl setcursor "$CURSOR_THEME" $CURSOR_SIZE 2>/dev/null
+           hyprctl setenv XCURSOR_THEME "$CURSOR_THEME" 2>/dev/null
+           hyprctl setenv XCURSOR_SIZE "$CURSOR_SIZE" 2>/dev/null
        fi   
     fi
 
@@ -564,7 +531,7 @@ if [[ -f "$HYPR_CONF" ]]; then
        fi
         
        if command -v hyprctl &> /dev/null; then
-           hyprctl setenv GTK_ICON_THEME "$ICON_THEME"
+           hyprctl setenv GTK_ICON_THEME "$ICON_THEME" 2>/dev/null
        fi
     fi
 fi

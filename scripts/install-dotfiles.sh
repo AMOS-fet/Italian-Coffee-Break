@@ -51,11 +51,11 @@ _print_centered_header() {
     local title="$1"
     local subtitle="$2"
     
-    local term_width=$(tput cols)
+    # Fallback a 80 colonne se tput non riesce a leggere la dimensione del terminale
+    local term_width=$(tput cols 2>/dev/null || echo 80)
     local box_width=60 
     local margin_left=$(( (term_width - box_width) / 2 ))
     
-    # Safety check for small screens
     if [ "$margin_left" -lt 0 ]; then margin_left=0; fi
     
     echo ""
@@ -106,11 +106,12 @@ _install_colloid_manual() {
     git clone https://github.com/vinceliuice/Colloid-gtk-theme.git "$temp_dir" --depth 1
     
     if [ -d "$temp_dir" ]; then
-        cd "$temp_dir" || exit
+        cd "$temp_dir" || return
         echo "   -> Running installer..."
         ./install.sh -t default -c dark light --tweaks rimless
         
         echo "  Colloid Theme installed."
+        cd - > /dev/null || return
         rm -rf "$temp_dir"
     else
         echo "  Error cloning Colloid repo."
@@ -125,11 +126,12 @@ _install_whitesur_manual() {
     git clone https://github.com/vinceliuice/WhiteSur-icon-theme.git "$temp_dir" --depth 1
     
     if [ -d "$temp_dir" ]; then
-        cd "$temp_dir" || exit
+        cd "$temp_dir" || return
         echo "   -> Running installer..."
         ./install.sh
         
         echo "  WhiteSur Icons installed."
+        cd - > /dev/null || return
         rm -rf "$temp_dir"
     else
         echo "  Error cloning WhiteSur repo."
@@ -181,20 +183,33 @@ _stow() {
 }
 
 
-_build_preselected_list() {
+# Sostituisci la vecchia _build_preselected_list con questa:
+_build_colored_list() {
     local -n arr=$1
-    local pre_selected=""
+    local -n out_arr=$2
+    local -n out_pre=$3
+    
+    local C_GREEN=$'\033[32m'
+    local C_WHITE=$'\033[37m'
+    local C_RESET=$'\033[0m'
+    
+    out_pre=""
+    out_arr=()
+    
     for item in "${arr[@]}"; do
-        pkg_name="${item%%:*}"
-        if _is_installed "$pkg_name"; then
-            if [ -z "$pre_selected" ]; then
-                pre_selected="$item"
+        local pkg="${item%%:*}"
+        if _is_installed "$pkg"; then
+            local formatted_item="${C_GREEN}${item}${C_RESET}"
+            if [ -z "$out_pre" ]; then
+                out_pre="$formatted_item"
             else
-                pre_selected="$pre_selected,$item"
+                out_pre="$out_pre,$formatted_item"
             fi
+        else
+            local formatted_item="${C_WHITE}${item}${C_RESET}"
         fi
+        out_arr+=("$formatted_item")
     done
-    echo "$pre_selected"
 }
 
 # -----------------------------------------------------
@@ -211,54 +226,60 @@ if ! command -v git &> /dev/null; then
     exit 1
 fi
 
-clear
+COLOR_BLUE="#448385"
 
+clear
 
 _print_centered_header "DOTFILES MANAGER" "Step 1/3: Select Software"
 
-echo " Scanning system for installed software..."
-PRE_SELECTED_PKGS=$(_build_preselected_list PACKAGES)
+echo "  Scanning system for installed software..."
+_build_colored_list PACKAGES COLORED_PACKAGES PRE_SELECTED_PKGS
 
-SELECTED_PACKAGES=$(gum choose --no-limit --height 10 \
+SELECTED_PACKAGES_RAW=$(gum choose --no-limit --height 12 \
     --cursor=" " \
-    --cursor.foreground="212" \
-    --selected.foreground="212" \
+    --cursor.foreground="$COLOR_BLUE" \
+    --selected.foreground="$COLOR_BLUE" \
     --header="SPACE to select/deselect, ENTER to confirm" \
     --selected="$PRE_SELECTED_PKGS" \
-    "${PACKAGES[@]}")
-
+    "${COLORED_PACKAGES[@]}")
 
 clear
+
+# --- STEP 2: FONTS ---
 _print_centered_header "TYPOGRAPHY" "Step 2/3: Select Fonts"
 
-echo " Scanning system for installed fonts..."
-PRE_SELECTED_FONTS=$(_build_preselected_list FONTS)
+echo "  Scanning system for installed fonts..."
+_build_colored_list FONTS COLORED_FONTS PRE_SELECTED_FONTS
 
-SELECTED_FONTS=$(gum choose --no-limit --height 10 \
+SELECTED_FONTS_RAW=$(gum choose --no-limit --height 10 \
     --cursor=" " \
-    --cursor.foreground="212" \
-    --selected.foreground="212" \
+    --cursor.foreground="$COLOR_BLUE" \
+    --selected.foreground="$COLOR_BLUE" \
     --header="SPACE to select/deselect, ENTER to confirm" \
     --selected="$PRE_SELECTED_FONTS" \
-    "${FONTS[@]}")
-
+    "${COLORED_FONTS[@]}")
 
 clear
+
+# --- STEP 3: THEMES ---
 _print_centered_header "LOOK & FEEL" "Step 3/3: Select Themes, Icons & Cursors"
 
-echo " Scanning system for installed themes..."
-PRE_SELECTED_THEMES=$(_build_preselected_list THEMES)
+echo "  Scanning system for installed themes..."
+_build_colored_list THEMES COLORED_THEMES PRE_SELECTED_THEMES
 
-SELECTED_THEMES=$(gum choose --no-limit --height 10 \
+SELECTED_THEMES_RAW=$(gum choose --no-limit --height 10 \
     --cursor=" " \
-    --cursor.foreground="212" \
-    --selected.foreground="212" \
+    --cursor.foreground="$COLOR_BLUE" \
+    --selected.foreground="$COLOR_BLUE" \
     --header="SPACE to select/deselect, ENTER to confirm" \
     --selected="$PRE_SELECTED_THEMES" \
-    "${THEMES[@]}")
-
+    "${COLORED_THEMES[@]}")
 
 clear
+
+SELECTED_PACKAGES=$(echo "$SELECTED_PACKAGES_RAW" | sed $'s/\e\\[[0-9;:]*[a-zA-Z]//g')
+SELECTED_FONTS=$(echo "$SELECTED_FONTS_RAW" | sed $'s/\e\\[[0-9;:]*[a-zA-Z]//g')
+SELECTED_THEMES=$(echo "$SELECTED_THEMES_RAW" | sed $'s/\e\\[[0-9;:]*[a-zA-Z]//g')
 
 if [ -z "$SELECTED_PACKAGES" ] && [ -z "$SELECTED_FONTS" ] && [ -z "$SELECTED_THEMES" ]; then
     echo "No items selected. Exiting."
@@ -269,7 +290,7 @@ _print_centered_header "SUMMARY" "Ready to install"
 
 gum style --foreground 212 "Selected Software:"
 if [ ! -z "$SELECTED_PACKAGES" ]; then
-    echo "$SELECTED_PACKAGES" | awk -F: '{print "  - " $1 " (" $2 ")"}'
+    echo "$SELECTED_PACKAGES" | awk -F: '{print "  - \033[36m" $1 "\033[0m (" $2 ")"}'
 else
     echo "  (None)"
 fi
@@ -277,7 +298,7 @@ fi
 echo ""
 gum style --foreground 212 "Selected Fonts:"
 if [ ! -z "$SELECTED_FONTS" ]; then
-    echo "$SELECTED_FONTS" | awk -F: '{print "  - " $1 " (" $2 ")"}'
+    echo "$SELECTED_FONTS" | awk -F: '{print "  - \033[36m" $1 "\033[0m (" $2 ")"}'
 else
     echo "  (None)"
 fi
@@ -285,7 +306,7 @@ fi
 echo ""
 gum style --foreground 212 "Selected Themes:"
 if [ ! -z "$SELECTED_THEMES" ]; then
-    echo "$SELECTED_THEMES" | awk -F: '{print "  - " $1 " (" $2 ")"}'
+    echo "$SELECTED_THEMES" | awk -F: '{print "  - \033[36m" $1 "\033[0m (" $2 ")"}'
 else
     echo "  (None)"
 fi
@@ -296,15 +317,12 @@ gum confirm "Proceed with installation?" || exit 0
 echo ""
 gum style --foreground 212 "Starting installation process..."
 
-
 echo "󰓦 Updating package databases..."
 yay -Sy
-
 
 ALL_SELECTIONS="$SELECTED_PACKAGES
 $SELECTED_FONTS
 $SELECTED_THEMES"
-
 
 IFS=$'\n'
 for line in $ALL_SELECTIONS; do
@@ -320,7 +338,6 @@ for line in $ALL_SELECTIONS; do
     echo ""
 done
 
-bash $HOME/dotfiles/scripts/theme-switch.sh dark orange
+bash "$HOME/dotfiles/scripts/theme-switch.sh" dark orange
 
 _print_centered_header "SUCCESS" "All tasks completed successfully!"
-
