@@ -127,7 +127,7 @@ tooltip label {
     border-radius: 4px;
     margin-bottom: 5px;
     transition: color 0.2s ease;
-}
+    }
 
 #custom-os:hover {
     color: @fg;
@@ -137,6 +137,15 @@ tooltip label {
     color: @fg_dim;
     margin-left: 8px;
     margin-bottom: 4px;
+}
+
+#custom-newspaper {
+    color: @accent_br;
+    font-size: 18px;
+    padding-left: 15px;
+    border-radius: 4px;
+    margin-bottom: 2px;
+    transition: color 0.2s ease;
 }
 
 /* -----------------------------------------------------

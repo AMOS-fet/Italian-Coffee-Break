@@ -21,10 +21,9 @@
     // -------------------------------------------------------------------------
     "modules-left": [
         "custom/os",
-        // "custom/sep",
         "hyprland/workspaces",
-        // "custom/sep",
-        "custom/kernel"
+        "custom/kernel",
+        "custom/newspaper"
     ],
     "modules-center": [
         "hyprland/window",
@@ -79,6 +78,12 @@
     "custom/kernel": {
         "exec": "uname -r",
         "format": "<span size='12pt' rise='-1000'>󰌽</span>   {}",
+        "tooltip": false
+    },
+
+    "custom/newspaper": {
+        "format": "󱀁 ",
+        "on-click": "kitty -e ~/dotfiles/scripts/newspaper.sh",
         "tooltip": false
     },
 

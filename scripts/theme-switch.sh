@@ -571,7 +571,21 @@ if command -v waybar &> /dev/null; then
 fi
 
 # -----------------------------------------------------
-# 13. Application: MICRO EDITOR
+# 13. Application: bulletty 
+# -----------------------------------------------------
+
+if command -v bulletty &> /dev/null; then
+    TEMPLATE_FILE="$DOTFILES/bulletty/.config/bulletty/config-${MODE}.toml"
+    TARGET_FILE="$CONFIG_DIR/bulletty/config.toml"
+
+    if [[ -f "$TEMPLATE_FILE" ]]; then
+        mkdir -p "$(dirname "$TARGET_FILE")"
+        cp "$TEMPLATE_FILE" "$TARGET_FILE"
+    fi
+fi
+
+# -----------------------------------------------------
+# 14. Application: MICRO EDITOR
 # -----------------------------------------------------
 
 if command -v micro &> /dev/null; then
@@ -593,7 +607,7 @@ if command -v micro &> /dev/null; then
 fi
 
 # -----------------------------------------------------
-# 14. Application: MAKO 
+# 15. Application: MAKO 
 # -----------------------------------------------------
 
 if command -v mako &> /dev/null; then

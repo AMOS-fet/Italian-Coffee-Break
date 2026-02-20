@@ -26,6 +26,7 @@ PACKAGES=(
     "micro:Intuitive Terminal Editor"
     "fastfetch:System information tool"
     "impala:TUI wifi manager"
+    "bulletty:Pretty feed reader for the terminal"
 )
 
 
@@ -37,7 +38,6 @@ FONTS=(
 
 
 THEMES=(
-    # Note: These use special keywords intercepted by the script
     "colloid-gtk-manual:Colloid GTK Theme (Dark & Light only)"
     "whitesur-icon-manual:WhiteSur Icon Theme"
     "phinger-cursors:Phinger Cursor Theme"
@@ -51,7 +51,6 @@ _print_centered_header() {
     local title="$1"
     local subtitle="$2"
     
-    # Fallback a 80 colonne se tput non riesce a leggere la dimensione del terminale
     local term_width=$(tput cols 2>/dev/null || echo 80)
     local box_width=60 
     local margin_left=$(( (term_width - box_width) / 2 ))
@@ -71,7 +70,6 @@ _print_centered_header() {
 _is_installed() {
     local pkg=$1
 
-    # Check for Colloid Manual
     if [ "$pkg" == "colloid-gtk-manual" ]; then
         if [ -d "$HOME/.themes/Colloid-Dark" ] || [ -d "$HOME/.local/share/themes/Colloid-Dark" ]; then
             return 0
@@ -80,7 +78,6 @@ _is_installed() {
         fi
     fi
 
-    # Check for WhiteSur Manual
     if [ "$pkg" == "whitesur-icon-manual" ]; then
         if [ -d "$HOME/.local/share/icons/WhiteSur" ] || [ -d "$HOME/.icons/WhiteSur" ]; then
             return 0
@@ -89,7 +86,6 @@ _is_installed() {
         fi
     fi
 
-    # Standard check via pacman
     if pacman -Qi "$pkg" &> /dev/null; then
         return 0 # True
     else
@@ -142,7 +138,6 @@ _install_whitesur_manual() {
 _install() {
     local pkg=$1
 
-    # Intercept Manual Installs
     if [ "$pkg" == "colloid-gtk-manual" ]; then
         _install_colloid_manual
         return
@@ -153,7 +148,6 @@ _install() {
         return
     fi
 
-    # Standard Install
     if _is_installed "$pkg"; then
         echo "  $pkg is already installed."
     else
@@ -175,7 +169,6 @@ _stow() {
     
     if [ -d "$target" ]; then
         echo "Stowing configuration for $pkg..."
-        # -R (Restow) is safer than -S as it refreshes links
         stow -d "$DOTFILES_DIR" -t "$HOME" -R "$pkg" 2>/dev/null
     else
         echo "  No dotfiles config for $pkg (Skipping stow)"
@@ -183,7 +176,6 @@ _stow() {
 }
 
 
-# Sostituisci la vecchia _build_preselected_list con questa:
 _build_colored_list() {
     local -n arr=$1
     local -n out_arr=$2
@@ -245,7 +237,7 @@ SELECTED_PACKAGES_RAW=$(gum choose --no-limit --height 12 \
 
 clear
 
-# --- STEP 2: FONTS ---
+
 _print_centered_header "TYPOGRAPHY" "Step 2/3: Select Fonts"
 
 echo "  Scanning system for installed fonts..."
@@ -261,7 +253,7 @@ SELECTED_FONTS_RAW=$(gum choose --no-limit --height 10 \
 
 clear
 
-# --- STEP 3: THEMES ---
+
 _print_centered_header "LOOK & FEEL" "Step 3/3: Select Themes, Icons & Cursors"
 
 echo "  Scanning system for installed themes..."
