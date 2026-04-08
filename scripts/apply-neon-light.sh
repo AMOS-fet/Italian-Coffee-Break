@@ -19,15 +19,18 @@ IMG_DARK="$WALLPAPER_DIR/wallpaper2_dark.png"
 IMG_FLICKER="$WALLPAPER_DIR/wallpaper2_flicker.png"
 IMG_LIGHT="$WALLPAPER_DIR/wallpaper2_light.png"
 
+export XDG_RUNTIME_DIR=/run/user/$(id -u)
+export WAYLAND_DISPLAY=wayland-1
+
 # -----------------------------------------------------
 # 2. Functions & Setup
 # -----------------------------------------------------
 
 set_img() {
-    swww img "$1" --transition-type none
+    awww img "$1" --transition-type none
 }
 
-swww query || swww-daemon &
+awww query || awww-daemon &
 
 # -----------------------------------------------------
 # 3. Animation Sequence (Power Up)
@@ -75,4 +78,4 @@ sleep 0.6
 set_img "$IMG_FLICKER"
 sleep 0.05
 
-swww img "$IMG_LIGHT" --transition-type simple --transition-step 200 --transition-fps 60
+awww img "$IMG_LIGHT" --transition-type simple --transition-step 200 --transition-fps 60

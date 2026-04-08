@@ -23,6 +23,14 @@ fi
 
 LINE_COUNT=$(echo "$INPUT_DATA" | grep -cve '^\s*$')
 
+MAX_LINES=10
+
+if [ "$LINE_COUNT" -gt "$MAX_LINES" ]; then
+    DISPLAY_LINES=$MAX_LINES
+else
+    DISPLAY_LINES=$LINE_COUNT
+fi
+
 MAX_CHARS=$(echo "$INPUT_DATA" | wc -L)
 
 WIDTH_PX=$(( (MAX_CHARS * 11) + 00 ))
@@ -31,42 +39,44 @@ if [ "$WIDTH_PX" -lt 200 ]; then
     WIDTH_PX=200
 fi
 
-# -----------------------------------------------------
-# 3. Rofi config override
-# -----------------------------------------------------
+if [ "$WIDTH_PX" -gt 200 ]; then
+    WIDTH_PX=450
+fi
 
+# -----------------------------------------------------
+# 3. Rofi config override (Il tuo default invisibile)
+# -----------------------------------------------------
 ROFI_OVERRIDE="
-    window {
-        width: ${WIDTH_PX}px;
+    window { 
+        width: ${WIDTH_PX}px; 
     }
-    mainbox {
+    mainbox { 
         children: [ listview ]; 
     }
     inputbar {
-        enabled: false;
+        enabled: false; 
     }
-    listview {
-        lines: ${LINE_COUNT};
-        scrollbar: false;
-        fixed-height: false;
+    listview { 
+        lines: ${DISPLAY_LINES}; 
+        scrollbar: false; 
+        fixed-height: false; 
     }
-    element {
-        orientation: horizontal;
-        children: [ element-text ];
+    element { 
+        orientation: horizontal; 
+        children: [ element-text ]; 
     }
-    element-text {
-        expand: true;
-        horizontal-align: 0.0;
-        vertical-align: 0.5;
+    element-text { 
+        expand: true; 
+        horizontal-align: 0.0; 
+        vertical-align: 0.5; 
     }
 "
 
 # -----------------------------------------------------
 # 4. Menu exec
 # -----------------------------------------------------
-
 echo "$INPUT_DATA" | rofi -dmenu \
     -i \
     -markup-rows \
     -config "$HOME/.config/rofi/config.rasi" \
-    -theme-str "$ROFI_OVERRIDE"
+    -theme-str "$ROFI_OVERRIDE" "$@"

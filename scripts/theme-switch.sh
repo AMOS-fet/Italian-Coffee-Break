@@ -15,6 +15,10 @@ DOTFILES="$HOME/dotfiles"
 CONFIG_DIR="$HOME/.config"
 PALETTE_FILE="$DOTFILES/scripts/palette.conf"
 
+# --- Wallpaper (AWWW) ---
+# Executes the separate script to apply wallpaper and awww settings
+setsid $DOTFILES/scripts/apply-neon-$MODE.sh >/dev/null 2>&1 &
+
 # -----------------------------------------------------
 # 1. Validate data
 # -----------------------------------------------------
@@ -88,26 +92,23 @@ if command -v Hyprland &> /dev/null; then
     TEMPLATE_FILE="$DOTFILES/hypr/.config/hypr/colors-${MODE}.conf"
     TARGET_FILE="$CONFIG_DIR/hypr/colors.conf"
 
-    if [[ ! -f "$TEMPLATE_FILE" ]]; then
-        echo " Error: Template '$TEMPLATE_FILE' not found!"
-        exit 1
-    fi    
-
-    BASE_ACCENT="${ACCENT%_br}"
-    VAR_NORMAL="\$${BASE_ACCENT%_br}"   # es. "red"
-    VAR_BRIGHT="\$${BASE_ACCENT}_br"    # es. "red_br"
+    if [[ -f "$TEMPLATE_FILE" ]]; then
+        BASE_ACCENT="${ACCENT%_br}"
+        VAR_NORMAL="\$${BASE_ACCENT%_br}"   # es. "red"
+        VAR_BRIGHT="\$${BASE_ACCENT}_br"    # es. "red_br"
+        
+        if [ "$MODE" == "dark" ]; then
+            NEW_BORDER="$VAR_BRIGHT $VAR_NORMAL 45deg"
+        else
+            NEW_BORDER="$VAR_NORMAL $VAR_BRIGHT 45deg"
+        fi
     
-    if [ "$MODE" == "dark" ]; then
-        NEW_BORDER="$VAR_BRIGHT $VAR_NORMAL 45deg"
-    else
-        NEW_BORDER="$VAR_NORMAL $VAR_BRIGHT 45deg"
-    fi
-
-    rm -f "$TARGET_FILE"
-    cp -f "$TEMPLATE_FILE" "$TARGET_FILE"
-    sed -i "s|^\$active_border.*|\$active_border = $NEW_BORDER|" "$TARGET_FILE"
-
-    hyprctl reload 1> /dev/null
+        rm -f "$TARGET_FILE"
+        cp -f "$TEMPLATE_FILE" "$TARGET_FILE"
+        sed -i "s|^\$active_border.*|\$active_border = $NEW_BORDER|" "$TARGET_FILE"
+    
+        hyprctl reload 1> /dev/null     
+    fi    
 fi
 
 # -----------------------------------------------------
@@ -118,14 +119,11 @@ if command -v rofi &> /dev/null; then
     TEMPLATE_FILE="$DOTFILES/rofi/.config/rofi/config-${MODE}.rasi"
     TARGET_FILE="$CONFIG_DIR/rofi/config.rasi"
 
-    if [[ ! -f "$TEMPLATE_FILE" ]]; then
-        echo " Error: Template '$TEMPLATE_FILE' not found!"
-        exit 1
+    if [[ -f "$TEMPLATE_FILE" ]]; then
+        rm -f "$TARGET_FILE"
+        cp "$TEMPLATE_FILE" "$TARGET_FILE"
+        sed -i "s/border-col:.*;/border-col: $FINAL_ACCENT_HEX;/" "$TARGET_FILE"    
     fi
-
-    rm -f "$TARGET_FILE"
-    cp "$TEMPLATE_FILE" "$TARGET_FILE"
-    sed -i "s/border-col:.*;/border-col: $FINAL_ACCENT_HEX;/" "$TARGET_FILE"
 fi
 
 # -----------------------------------------------------
@@ -136,28 +134,25 @@ if command -v kitty &> /dev/null; then
     TEMPLATE_FILE="$DOTFILES/kitty/.config/kitty/theme-${MODE}.conf"
     TARGET_FILE="$CONFIG_DIR/kitty/theme.conf"
 
-    if [[ ! -f "$TEMPLATE_FILE" ]]; then
-        echo " Error: Template '$TEMPLATE_FILE' not found!"
-        exit 1
+    if [[ -f "$TEMPLATE_FILE" ]]; then
+        BASE_ACCENT="${ACCENT%_br}"    
+        VAR_NORMAL="${BASE_ACCENT}"     
+        VAR_BRIGHT="${BASE_ACCENT}_br"  
+        
+        HEX_ACTIVE="${!VAR_BRIGHT}"    
+        HEX_INACTIVE="${!VAR_NORMAL}"  
+    
+        if [[ -z "$HEX_INACTIVE" ]]; then HEX_INACTIVE="$HEX_ACTIVE"; fi
+        
+        rm -f "$TARGET_FILE"
+        cp "$TEMPLATE_FILE" "$TARGET_FILE"
+    
+        sed -i "s/^selection_background.*/selection_background  $HEX_ACTIVE/" "$TARGET_FILE"
+        sed -i "s/^active_tab_background.*/active_tab_background $HEX_ACTIVE/" "$TARGET_FILE"
+        sed -i "s/^inactive_tab_background.*/inactive_tab_background $HEX_INACTIVE/" "$TARGET_FILE"
+    
+        killall -SIGUSR1 kitty 2>/dev/null
     fi
-    
-    BASE_ACCENT="${ACCENT%_br}"    
-    VAR_NORMAL="${BASE_ACCENT}"     
-    VAR_BRIGHT="${BASE_ACCENT}_br"  
-    
-    HEX_ACTIVE="${!VAR_BRIGHT}"    
-    HEX_INACTIVE="${!VAR_NORMAL}"  
-
-    if [[ -z "$HEX_INACTIVE" ]]; then HEX_INACTIVE="$HEX_ACTIVE"; fi
-    
-    rm -f "$TARGET_FILE"
-    cp "$TEMPLATE_FILE" "$TARGET_FILE"
-
-    sed -i "s/^selection_background.*/selection_background  $HEX_ACTIVE/" "$TARGET_FILE"
-    sed -i "s/^active_tab_background.*/active_tab_background $HEX_ACTIVE/" "$TARGET_FILE"
-    sed -i "s/^inactive_tab_background.*/inactive_tab_background $HEX_INACTIVE/" "$TARGET_FILE"
-
-    killall -SIGUSR1 kitty 2>/dev/null
 fi
 
 # -----------------------------------------------------
@@ -220,10 +215,6 @@ if command -v btop &> /dev/null; then
     if [[ -f "$TEMPLATE_FILE" ]]; then
         mkdir -p "$(dirname "$TARGET_FILE")"
         cp "$TEMPLATE_FILE" "$TARGET_FILE"
-
-        if [[ -f "$BTOP_CONF_FILE" ]]; then
-             sed -i "s|^color_theme =.*|color_theme = \"$TARGET_FILE\"|" "$BTOP_CONF_FILE"
-        fi
     fi
 fi
 
@@ -585,7 +576,30 @@ if command -v bulletty &> /dev/null; then
 fi
 
 # -----------------------------------------------------
-# 14. Application: MICRO EDITOR
+# 14. Application: NVIM
+# -----------------------------------------------------
+
+if command -v nvim &> /dev/null; then
+    TEMPLATE_FILE="$DOTFILES/nvim/.config/nvim/lua/coffee_break.lua"
+    TARGET_FILE="$CONFIG_DIR/nvim/lua/coffee_break.lua"
+
+    TEMPLATE_BG="$DOTFILES/nvim/.config/nvim/lua/config/bg_mode.lua"
+    TARGET_BG="$CONFIG_DIR/nvim/lua/config/bg_mode.lua"
+    
+    if [[ -f "$TEMPLATE_FILE" ]]; then
+        rm -f "$TARGET_FILE"
+        cp "$TEMPLATE_FILE" "$TARGET_FILE"    
+    fi
+
+    if [[ -f "$TEMPLATE_BG" ]]; then
+        rm -f "$TARGET_BG"
+        cp "$TEMPLATE_BG" "$TARGET_BG"    
+        sed -i "s/vim.o.background:.*;/vim.o.background: $MODE;/" "$TARGET_BG"
+    fi
+fi
+
+# -----------------------------------------------------
+# 15. Application: MICRO EDITOR
 # -----------------------------------------------------
 
 if command -v micro &> /dev/null; then
@@ -607,7 +621,7 @@ if command -v micro &> /dev/null; then
 fi
 
 # -----------------------------------------------------
-# 15. Application: MAKO 
+# 16. Application: MAKO 
 # -----------------------------------------------------
 
 if command -v mako &> /dev/null; then
