@@ -23,7 +23,8 @@
         "custom/os",
         "hyprland/workspaces",
         "custom/kernel",
-        "custom/newspaper"
+        "custom/newspaper",
+        "custom/vpn",
     ],
     "modules-center": [
         "hyprland/window",
@@ -164,6 +165,15 @@
         "tooltip-format-disabled": "Disabled",
         "on-click": "hyprctl dispatch exec '[float; size 600 700; center; pin] kitty --class impala-float -e impala'",
         "on-click-right": "rfkill toggle wifi"
+    },
+
+    "custom/vpn": {
+       "exec": "~/dotfiles/scripts/vpn-status.sh",
+       "return-type": "json",
+       "interval": "once",
+       "signal": 8,
+       "on-click": "~/dotfiles/scripts/vpn-master.sh",
+       "format": "<span size='12pt' rise='1000'>{text}</span>"
     },
 
     "bluetooth": {

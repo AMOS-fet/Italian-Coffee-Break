@@ -1,14 +1,14 @@
 # -----------------------------------------------------
-# BTOP COLOR PALETTE (Gruvbox Material Custom)
+# BTOP COLOR PALETTE (Gruvbox Material Dark)
 # Author: AMOS-fet
 # -----------------------------------------------------
 
 # -----------------------------------------------------
 # 1. Interface
 # -----------------------------------------------------
-theme[main_bg]="#F9EDD2"    
-theme[main_fg]="#282828"    
-theme[title]="#282828"      
+theme[main_bg]="#282828"    
+theme[main_fg]="#F9EDD2"    
+theme[title]="#F9EDD2"      
 theme[hi_fg]="#CA2420"      
 theme[selected_bg]="#D75C0F" 
 theme[selected_fg]="#F9EDD2" 

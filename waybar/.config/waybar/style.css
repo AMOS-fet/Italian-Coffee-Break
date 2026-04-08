@@ -11,7 +11,7 @@
  * ----------------------------------------------------- */
 
 * {
-    font-family: "SF Pro Display", "SF Pro", "JetBrainsMono Nerd Font", sans-serif;
+    font-family: "SF Pro Rounded", "SF Pro", "JetBrainsMono Nerd Font", sans-serif;
     font-weight: 600;
     font-size: 14px;
     min-height: 0;
@@ -59,8 +59,8 @@ tooltip label {
     border-radius: 15px;
     margin-bottom: 7px;
     margin-top: 4px;
-    margin-left: 11px;
-    margin-right: 6px; 
+    margin-left: 9px;
+    margin-right: 4px; 
     padding: 0px 3px 0px 1px;
     background-color: @accent_br;
 }
@@ -135,17 +135,38 @@ tooltip label {
 
 #custom-kernel {
     color: @fg_dim;
-    margin-left: 8px;
+    margin-left: 7px;
     margin-bottom: 4px;
 }
 
 #custom-newspaper {
     color: @accent_br;
     font-size: 18px;
-    padding-left: 15px;
+    padding-left: 12px;
     border-radius: 4px;
     margin-bottom: 2px;
     transition: color 0.2s ease;
+}
+
+/* Windscribe */
+#custom-vpn {
+    padding-bottom: 3px;
+    padding-left: 4px;
+    padding-right: 8px;
+    font-weight: bold;
+    transition: color 0.2s ease;
+}
+
+#custom-vpn.disconnected {
+    color: @fg_dim
+}
+
+#custom-vpn.connected {
+    color: @purple_br; 
+}
+
+#custom-vpn:hover {
+    color: @fg;
 }
 
 /* -----------------------------------------------------
@@ -208,6 +229,7 @@ tooltip label {
     color: @fg;
 }
 
+
 /* -----------------------------------------------------
  * 7. RIGHT MODULES (Specific Colors & Logic)
  * ----------------------------------------------------- */
@@ -247,7 +269,7 @@ tooltip label {
 #bluetooth {
     color: @aqua;
     padding-left: 9px;
-    padding-right: 3px;
+    padding-right: 2px;
 }
 #bluetooth.connected { color: @blue; }
 #bluetooth.disabled  { color: @fg_dim; }
@@ -258,7 +280,7 @@ tooltip label {
 /* PulseAudio */
 window#waybar #pulseaudio {
     color: @aqua;
-    padding-left: 2px;
+    padding-left: 1px;
     padding-right: 7px;
 }
 window#waybar #pulseaudio.muted {
