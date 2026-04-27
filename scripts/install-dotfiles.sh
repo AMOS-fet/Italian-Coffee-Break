@@ -1,3 +1,4 @@
+
 #!/bin/bash
 
 # -----------------------------------------------------
@@ -25,7 +26,7 @@ PACKAGES=(
     "waybar:Status Bar for Wayland"
     "micro:Intuitive Terminal Editor"
     "fastfetch:System information tool"
-    "impala:TUI wifi manager"
+    "networkmanager:Standard Network Manager"
     "bulletty:Pretty feed reader for the terminal"
 )
 
@@ -160,18 +161,24 @@ _install() {
 _stow() {
     local pkg=$1
     
-   
-    if [ "$pkg" == "colloid-gtk-manual" ] || [ "$pkg" == "whitesur-icon-manual" ]; then
+    if [ "$pkg" == "colloid-gtk-manual" ] || [ "$pkg" == "whitesur-icon-manual" ] || [[ "$pkg" == *"fonts"* ]]; then
         return
     fi
 
-    local target="$DOTFILES_DIR/$pkg"
+    local stow_folder="$pkg"
+    
+    case "$pkg" in
+        "hyprland")       stow_folder="hypr" ;;
+        "librewolf-bin")  stow_folder="librewolf" ;;
+    esac
+
+    local target="$DOTFILES_DIR/$stow_folder"
     
     if [ -d "$target" ]; then
-        echo "Stowing configuration for $pkg..."
-        stow -d "$DOTFILES_DIR" -t "$HOME" -R "$pkg" 2>/dev/null
+        echo "Stowing configuration for $stow_folder..."
+        stow -d "$DOTFILES_DIR" -t "$HOME" -R "$stow_folder" 2>/dev/null
     else
-        echo "  No dotfiles config for $pkg (Skipping stow)"
+        echo "  No dotfiles config for $stow_folder (Skipping stow)"
     fi
 }
 

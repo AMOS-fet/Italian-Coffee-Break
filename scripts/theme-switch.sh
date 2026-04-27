@@ -17,7 +17,7 @@ PALETTE_FILE="$DOTFILES/scripts/palette.conf"
 
 # --- Wallpaper (AWWW) ---
 # Executes the separate script to apply wallpaper and awww settings
-setsid $DOTFILES/scripts/apply-neon-$MODE.sh >/dev/null 2>&1 &
+setsid $DOTFILES/scripts/apply-neon-$MODE.sh "$ACCENT" >/dev/null 2>&1 &
 
 # -----------------------------------------------------
 # 1. Validate data
@@ -88,27 +88,32 @@ to_rgb() {
 # -----------------------------------------------------
 
 if command -v Hyprland &> /dev/null; then
+    TARGET_FILE="$DOTFILES/hypr/.config/hypr/colors.conf"
 
-    TEMPLATE_FILE="$DOTFILES/hypr/.config/hypr/colors-${MODE}.conf"
-    TARGET_FILE="$CONFIG_DIR/hypr/colors.conf"
+    BASE_ACCENT="${ACCENT%_br}"
+    VAR_BRIGHT="${BASE_ACCENT}_br"
+    
+    HEX_NORMAL="${!BASE_ACCENT}"
+    HEX_BRIGHT="${!VAR_BRIGHT}"
+    
+    if [[ -z "$HEX_NORMAL" ]]; then HEX_NORMAL="$FINAL_ACCENT_HEX"; fi
+    if [[ -z "$HEX_BRIGHT" ]]; then HEX_BRIGHT="$HEX_NORMAL"; fi
 
-    if [[ -f "$TEMPLATE_FILE" ]]; then
-        BASE_ACCENT="${ACCENT%_br}"
-        VAR_NORMAL="\$${BASE_ACCENT%_br}"   # es. "red"
-        VAR_BRIGHT="\$${BASE_ACCENT}_br"    # es. "red_br"
-        
-        if [ "$MODE" == "dark" ]; then
-            NEW_BORDER="$VAR_BRIGHT $VAR_NORMAL 45deg"
-        else
-            NEW_BORDER="$VAR_NORMAL $VAR_BRIGHT 45deg"
-        fi
+    HYPR_C1="rgb(${HEX_BRIGHT:1})"
+    HYPR_C2="rgb(${HEX_NORMAL:1})"
     
-        rm -f "$TARGET_FILE"
-        cp -f "$TEMPLATE_FILE" "$TARGET_FILE"
-        sed -i "s|^\$active_border.*|\$active_border = $NEW_BORDER|" "$TARGET_FILE"
-    
-        hyprctl reload 1> /dev/null     
-    fi    
+    if [ "$MODE" == "dark" ]; then
+        NEW_BORDER="$HYPR_C1 $HYPR_C2 45deg"
+        INACTIVE_BORDER="rgb(282828)"
+    else
+        NEW_BORDER="$HYPR_C2 $HYPR_C1 45deg"
+        INACTIVE_BORDER="rgb(e5e5e5)" 
+    fi
+
+    echo "\$active_border = $NEW_BORDER" > "$TARGET_FILE"
+    echo "\$inactive_border = $INACTIVE_BORDER" >> "$TARGET_FILE"
+
+    hyprctl reload 1> /dev/null     
 fi
 
 # -----------------------------------------------------
@@ -117,7 +122,8 @@ fi
 
 if command -v rofi &> /dev/null; then
     TEMPLATE_FILE="$DOTFILES/rofi/.config/rofi/config-${MODE}.rasi"
-    TARGET_FILE="$CONFIG_DIR/rofi/config.rasi"
+    # CORRETTO: Scrive nei dotfiles
+    TARGET_FILE="$DOTFILES/rofi/.config/rofi/config.rasi"
 
     if [[ -f "$TEMPLATE_FILE" ]]; then
         rm -f "$TARGET_FILE"
@@ -132,7 +138,8 @@ fi
 
 if command -v kitty &> /dev/null; then
     TEMPLATE_FILE="$DOTFILES/kitty/.config/kitty/theme-${MODE}.conf"
-    TARGET_FILE="$CONFIG_DIR/kitty/theme.conf"
+    # CORRETTO: Scrive nei dotfiles
+    TARGET_FILE="$DOTFILES/kitty/.config/kitty/theme.conf"
 
     if [[ -f "$TEMPLATE_FILE" ]]; then
         BASE_ACCENT="${ACCENT%_br}"    
@@ -161,7 +168,7 @@ fi
 
 if command -v starship &> /dev/null; then
     TEMPLATE_FILE="$DOTFILES/starship/.config/starship-${MODE}.toml"
-    TARGET_FILE="$CONFIG_DIR/starship.toml"
+    TARGET_FILE="$DOTFILES/starship/.config/starship.toml"
 
     BASE_ACCENT="${ACCENT%_br}"
 
@@ -209,9 +216,9 @@ fi
 
 if command -v btop &> /dev/null; then
     TEMPLATE_FILE="$DOTFILES/btop/.config/btop/themes/${MODE}.theme"
-    TARGET_FILE="$CONFIG_DIR/btop/themes/current.theme"
-    BTOP_CONF_FILE="$CONFIG_DIR/btop/btop.conf"
-
+    # CORRETTO: Scrive nei dotfiles
+    TARGET_FILE="$DOTFILES/btop/.config/btop/themes/current.theme"
+    
     if [[ -f "$TEMPLATE_FILE" ]]; then
         mkdir -p "$(dirname "$TARGET_FILE")"
         cp "$TEMPLATE_FILE" "$TARGET_FILE"
@@ -497,11 +504,11 @@ if [[ -f "$HYPR_CONF" ]]; then
     if [[ -d "/usr/share/icons/$CURSOR_THEME" ]] || \
        [[ -d "$HOME/.local/share/icons/$CURSOR_THEME" ]] || \
        [[ -d "$HOME/.icons/$CURSOR_THEME" ]]; then
-        
+       
        if grep -q "env = XCURSOR_THEME," "$HYPR_CONF"; then
            sed -i "s|^env = XCURSOR_THEME,.*|env = XCURSOR_THEME,$CURSOR_THEME|" "$HYPR_CONF"
        fi
-        
+       
        if grep -q "env = XCURSOR_SIZE," "$HYPR_CONF"; then
            sed -i "s|^env = XCURSOR_SIZE,.*|env = XCURSOR_SIZE,$CURSOR_SIZE|" "$HYPR_CONF"
        fi
@@ -520,7 +527,7 @@ if [[ -f "$HYPR_CONF" ]]; then
        if grep -q "env = GTK_ICON_THEME," "$HYPR_CONF"; then
            sed -i "s|^env = GTK_ICON_THEME,.*|env = GTK_ICON_THEME,$ICON_THEME|" "$HYPR_CONF"
        fi
-        
+       
        if command -v hyprctl &> /dev/null; then
            hyprctl setenv GTK_ICON_THEME "$ICON_THEME" 2>/dev/null
        fi
@@ -533,7 +540,8 @@ fi
 
 if command -v waybar &> /dev/null; then
     TEMPLATE_FILE="$DOTFILES/waybar/.config/waybar/colors-${MODE}.css"
-    TARGET_FILE="$CONFIG_DIR/waybar/colors.css"
+    # CORRETTO: Scrive nei dotfiles
+    TARGET_FILE="$DOTFILES/waybar/.config/waybar/colors.css"
 
     if [[ ! -f "$TEMPLATE_FILE" ]]; then
         echo " Error: Template '$TEMPLATE_FILE' not found!"
@@ -567,7 +575,8 @@ fi
 
 if command -v bulletty &> /dev/null; then
     TEMPLATE_FILE="$DOTFILES/bulletty/.config/bulletty/config-${MODE}.toml"
-    TARGET_FILE="$CONFIG_DIR/bulletty/config.toml"
+    # CORRETTO: Scrive nei dotfiles
+    TARGET_FILE="$DOTFILES/bulletty/.config/bulletty/config.toml"
 
     if [[ -f "$TEMPLATE_FILE" ]]; then
         mkdir -p "$(dirname "$TARGET_FILE")"
@@ -581,10 +590,12 @@ fi
 
 if command -v nvim &> /dev/null; then
     TEMPLATE_FILE="$DOTFILES/nvim/.config/nvim/lua/coffee_break.lua"
-    TARGET_FILE="$CONFIG_DIR/nvim/lua/coffee_break.lua"
+    # CORRETTO: Scrive nei dotfiles
+    TARGET_FILE="$DOTFILES/nvim/.config/nvim/lua/coffee_break.lua"
 
     TEMPLATE_BG="$DOTFILES/nvim/.config/nvim/lua/config/bg_mode.lua"
-    TARGET_BG="$CONFIG_DIR/nvim/lua/config/bg_mode.lua"
+    # CORRETTO: Scrive nei dotfiles
+    TARGET_BG="$DOTFILES/nvim/.config/nvim/lua/config/bg_mode.lua"
     
     if [[ -f "$TEMPLATE_FILE" ]]; then
         rm -f "$TARGET_FILE"
@@ -605,8 +616,10 @@ fi
 if command -v micro &> /dev/null; then
     
     TEMPLATE_FILE="$DOTFILES/micro/.config/micro/colorschemes/gruvbox-${MODE}.micro"
-    TARGET_FILE="$CONFIG_DIR/micro/colorschemes/custom.micro"
-    SETTINGS_FILE="$CONFIG_DIR/micro/settings.json"
+    # CORRETTO: Scrive nei dotfiles
+    TARGET_FILE="$DOTFILES/micro/.config/micro/colorschemes/custom.micro"
+    # CORRETTO: Scrive nei dotfiles
+    SETTINGS_FILE="$DOTFILES/micro/.config/micro/settings.json"
 
     if [[ -f "$TEMPLATE_FILE" ]]; then
         
@@ -625,21 +638,23 @@ fi
 # -----------------------------------------------------
 
 if command -v mako &> /dev/null; then
+    HEX_MAKO="$FINAL_ACCENT_HEX"
+    if [[ ! "$HEX_MAKO" == \#* ]]; then
+        HEX_MAKO="#$HEX_MAKO"
+    fi
+
     TEMPLATE_FILE="$DOTFILES/mako/.config/mako/${MODE}" 
-    TARGET_FILE="$HOME/.config/mako/config"
+    TARGET_FILE="$DOTFILES/mako/.config/mako/config"
 
     if [[ -f "$TEMPLATE_FILE" ]]; then
-        BASE_ACCENT="${ACCENT%_br}"
-        if [ "$MODE" == "dark" ]; then VAR_NAME="${BASE_ACCENT}_br"; else VAR_NAME="${BASE_ACCENT}"; fi
-        MAKO_BORDER="${!VAR_NAME}"
-       
-        if [[ -z "$MAKO_BORDER" ]]; then MAKO_BORDER="${!BASE_ACCENT}"; fi
-        
-        rm -f $TARGET_FILE
-        sed "0,/^border-color=/s/^border-color=.*/border-color=$MAKO_BORDER/" "$TEMPLATE_FILE" > "$TARGET_FILE"
+        rm -f "$TARGET_FILE"
+        cp "$TEMPLATE_FILE" "$TARGET_FILE"
+
+        sed -i "s|ACCENT_COLOR|$HEX_MAKO|" "$TARGET_FILE"S
     fi
-    makoctl reload >/dev/null 2>&1 || true
+    
+    killall mako 2>/dev/null
+    sleep 0.1
+    mako >/dev/null 2>&1 &
+    disown
 fi
-
-
-
