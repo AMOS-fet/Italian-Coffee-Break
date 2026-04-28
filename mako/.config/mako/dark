@@ -3,11 +3,11 @@
 # Author: AMOS-fet
 # -----------------------------------------------------
 
-font=SF Pro 11
+font=SF Pro 10.5
 background-color=#282828
 border-color=ACCENT_COLOR
 text-color=#F9EDD2
-width=250
+width=300
 height=150
 margin=10
 padding=15

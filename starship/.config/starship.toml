@@ -1,5 +1,5 @@
 # -----------------------------------------------------
-# File: starship-light.toml
+# File: starship-dark.toml
 # Description: Starship prompt configuration (Gruvbox Dark)
 # Author: AMOS-fet
 # -----------------------------------------------------
@@ -7,7 +7,7 @@
 "$schema" = 'https://starship.rs/config-schema.json'
 
 add_newline = true
-palette = 'gruvbox_light'
+palette = 'gruvbox_dark'
 
 # -----------------------------------------------------
 # 1. PROMPT FORMAT (Powerline Style)
@@ -17,15 +17,15 @@ palette = 'gruvbox_light'
 # End modules are beige (light) -> Text must be DARK.
 
 format = """
-[](color_orange)\
+[](color_blue)\
 $os\
 $username\
-[](bg:color_yellow fg:color_orange)\
+[](bg:color_purple fg:color_blue)\
 $directory\
-[](bg:color_aqua fg:color_yellow)\
+[](bg:color_orange fg:color_purple)\
 $git_branch\
 $git_status\
-[](bg:color_blue fg:color_aqua)\
+[](bg:color_yellow fg:color_orange)\
 $c\
 $cpp\
 $rust\
@@ -36,7 +36,7 @@ $java\
 $kotlin\
 $haskell\
 $python\
-[](bg:color_bg1 fg:color_blue)\
+[](bg:color_bg1 fg:color_yellow)\
 $docker_context\
 $conda\
 $pixi\
@@ -49,30 +49,30 @@ $line_break$character"""
 # -----------------------------------------------------
 # 2. PALETTE DEFINITION (Gruvbox Dark)
 # -----------------------------------------------------
-[palettes.gruvbox_light]
+[palettes.gruvbox_dark]
 # Light Mode: Bars are dark/saturated, so text inside needs to be LIGHT
-color_base_text = '#282828' 
-color_fg0       = '#F9EDD2'
+color_base_text = '#F9EDD2' 
+color_fg0       = '#282828'
 
 # For end modules (beige backgrounds), we need DARK text for contrast
-color_ui_text   = '#D3C29F'
+color_ui_text   = '#504945'
 
 color_bg1    = '#8F8173'    # Dark Beige
 color_bg3    = '#A89985'    # Darker Beige
-color_blue   = '#448385'    # Dark Blue
-color_aqua   = '#679B69'    # Dark Aqua
-color_green  = '#98971C'    # Olive Green
-color_orange = '#D75C0F'    # Rust
-color_purple = '#A962AF'    # Purple
-color_red    = '#CA2420'    # Blood Red
-color_yellow = '#D89822'    # Ochre
+color_blue   = '#83A497'    # Dark Blue
+color_aqua   = '#8EBE7A'    # Dark Aqua
+color_green  = '#B7B827'    # Olive Green
+color_orange = '#FE7C0D'    # Rust
+color_purple = '#D184CC'    # Purple
+color_red    = '#F94835'    # Blood Red
+color_yellow = '#F9BB31'    # Ochre
 
 # -----------------------------------------------------
 # 3. CORE MODULES (OS, User, Dir)
 # -----------------------------------------------------
 
 [os]
-style = "bg:color_orange fg:color_base_text"
+style = "bg:color_blue fg:color_base_text"
 disabled = false
 format = '[$symbol]($style)'
 
@@ -102,12 +102,12 @@ Pop         = ""
 
 [username]
 show_always = true
-style_user = "bg:color_orange fg:color_base_text bold"
-style_root = "bg:color_orange fg:color_base_text bold"
+style_user = "bg:color_blue fg:color_base_text bold"
+style_root = "bg:color_blue fg:color_base_text bold"
 format = '[ $user ]($style)'
 
 [directory]
-style = "bg:color_yellow fg:color_base_text"
+style = "bg:color_purple fg:color_base_text"
 format = "[ $path ]($style)"
 truncation_length = 3
 truncation_symbol = "…/"
@@ -125,12 +125,12 @@ truncation_symbol = "…/"
 
 [git_branch]
 symbol = ""
-style = "bg:color_aqua fg:color_base_text"
-format = '[[ $symbol $branch ](bg:color_aqua fg:color_base_text)]($style)'
+style = "bg:color_orange fg:color_base_text"
+format = '[[ $symbol $branch ](bg:color_orange fg:color_base_text)]($style)'
 
 [git_status]
-style = "bg:color_aqua fg:color_base_text"
-format = '[[($all_status$ahead_behind )](bg:color_aqua fg:color_base_text)]($style)'
+style = "bg:color_orange fg:color_base_text"
+format = '[[($all_status$ahead_behind )](bg:color_orange fg:color_base_text)]($style)'
 
 # -----------------------------------------------------
 # 5. LANGUAGES & RUNTIMES (Blue Background, Light Text)

@@ -216,7 +216,7 @@ style = "bg:color_bg3"
 [time]
 disabled = false
 time_format = "%T"
-style = "bg:color_bg2"
+style = "bg:color_bg3"
 format = '[[  $time ](fg:color_ui_text bg:color_bg3)]($style)'
 
 [line_break]

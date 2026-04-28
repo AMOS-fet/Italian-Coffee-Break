@@ -565,8 +565,6 @@ if command -v waybar &> /dev/null; then
     sed -i "s/@define-color accent_br.*/@define-color accent_br $HEX_BRIGHT;/" "$TARGET_FILE"
     sed -i "s/@define-color accent .*/@define-color accent $HEX_NORMAL;/" "$TARGET_FILE"
 
-   
-    pkill -SIGUSR2 waybar
 fi
 
 # -----------------------------------------------------
@@ -610,7 +608,35 @@ if command -v nvim &> /dev/null; then
 fi
 
 # -----------------------------------------------------
-# 15. Application: MICRO EDITOR
+# 15. Application: MAKO 
+# -----------------------------------------------------
+
+if command -v mako &> /dev/null; then
+    
+    HEX_MAKO="$FINAL_ACCENT_HEX"
+    if [[ ! "$HEX_MAKO" == \#* ]]; then
+        HEX_MAKO="#$HEX_MAKO"
+    fi
+
+    TEMPLATE_FILE="$DOTFILES/mako/.config/mako/${MODE}" 
+    TARGET_FILE="$DOTFILES/mako/.config/mako/config"
+
+    if [[ -f "$TEMPLATE_FILE" ]]; then
+        rm -f "$TARGET_FILE"
+        cp "$TEMPLATE_FILE" "$TARGET_FILE"
+
+        sed -i "s|ACCENT_COLOR|$HEX_MAKO|" "$TARGET_FILE"
+    fi
+    
+    killall mako 2>/dev/null
+    sleep 0.1
+    mako >/dev/null 2>&1 &
+    disown
+fi
+
+
+# -----------------------------------------------------
+# 16. Application: MICRO EDITOR
 # -----------------------------------------------------
 
 if command -v micro &> /dev/null; then
@@ -633,28 +659,4 @@ if command -v micro &> /dev/null; then
     fi
 fi
 
-# -----------------------------------------------------
-# 16. Application: MAKO 
-# -----------------------------------------------------
-
-if command -v mako &> /dev/null; then
-    HEX_MAKO="$FINAL_ACCENT_HEX"
-    if [[ ! "$HEX_MAKO" == \#* ]]; then
-        HEX_MAKO="#$HEX_MAKO"
-    fi
-
-    TEMPLATE_FILE="$DOTFILES/mako/.config/mako/${MODE}" 
-    TARGET_FILE="$DOTFILES/mako/.config/mako/config"
-
-    if [[ -f "$TEMPLATE_FILE" ]]; then
-        rm -f "$TARGET_FILE"
-        cp "$TEMPLATE_FILE" "$TARGET_FILE"
-
-        sed -i "s|ACCENT_COLOR|$HEX_MAKO|" "$TARGET_FILE"S
-    fi
-    
-    killall mako 2>/dev/null
-    sleep 0.1
-    mako >/dev/null 2>&1 &
-    disown
-fi
+pkill -SIGUSR2 waybar
