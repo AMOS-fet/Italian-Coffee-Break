@@ -1,0 +1,24 @@
+# -----------------------------------------------------
+# File: config-dark.toml
+# Description: Bulletty custom theme
+# Author: AMOS-fet
+# -----------------------------------------------------
+
+datapath = "/tmp/bulletty"
+
+[theme]
+background = "#282828"          
+foreground = "#F9EDD2"          
+borders = "#504945"             
+
+highlight_bg = "#FE7C0D"        
+highlight_fg = "#282828"        
+
+title_color = "#F94835"         
+date_color = "#8EBE7A"         
+feed_name = "#D184CC"         
+link_color = "#83A497"        
+
+[ui]
+draw_borders = true
+show_icons = true
