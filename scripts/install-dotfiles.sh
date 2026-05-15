@@ -1,4 +1,3 @@
-
 #!/bin/bash
 
 # -----------------------------------------------------
@@ -19,7 +18,7 @@ PACKAGES=(
     "hyprland:Tiling Window Manager"
     "kitty:GPU Accelerated Terminal"
     "librewolf-bin:Community-mantained fork of firefox"
-    "swww:Wallpaper Utility"
+    "awww:Wallpaper Utility"
     "mako:Notification Daemon"
     "rofi:Application Launcher"
     "starship:Cross-shell Prompt"
@@ -172,13 +171,24 @@ _stow() {
         "librewolf-bin")  stow_folder="librewolf" ;;
     esac
 
-    local target="$DOTFILES_DIR/$stow_folder"
+    local source_path="$DOTFILES_DIR/$stow_folder"
     
-    if [ -d "$target" ]; then
+    if [ -d "$source_path" ]; then
         echo "Stowing configuration for $stow_folder..."
-        stow -d "$DOTFILES_DIR" -t "$HOME" -R "$stow_folder" 2>/dev/null
+        
+        local target_config="$HOME/.config/$stow_folder"
+        
+        if [ -e "$target_config" ]; then
+            if [ -L "$target_config" ]; then
+                echo "  -> $stow_folder is already a link"
+            else
+                rm -rf "$target_config"
+            fi
+        fi
+
+        stow -d "$DOTFILES_DIR" -t "$HOME" -R "$stow_folder"
     else
-        echo "  No dotfiles config for $stow_folder (Skipping stow)"
+        echo "  Nessuna config per $stow_folder (Salto stow)"
     fi
 }
 

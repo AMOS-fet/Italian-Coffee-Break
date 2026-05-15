@@ -17,15 +17,15 @@ palette = 'gruvbox_dark'
 # End modules are beige (light) -> Text must be DARK.
 
 format = """
-[](color_green)\
+[](color_orange)\
 $os\
 $username\
-[](bg:color_aqua fg:color_green)\
+[](bg:color_yellow fg:color_orange)\
 $directory\
-[](bg:color_purple fg:color_aqua)\
+[](bg:color_aqua fg:color_yellow)\
 $git_branch\
 $git_status\
-[](bg:color_red fg:color_purple)\
+[](bg:color_blue fg:color_aqua)\
 $c\
 $cpp\
 $rust\
@@ -36,7 +36,7 @@ $java\
 $kotlin\
 $haskell\
 $python\
-[](bg:color_bg1 fg:color_red)\
+[](bg:color_bg1 fg:color_blue)\
 $docker_context\
 $conda\
 $pixi\
@@ -72,7 +72,7 @@ color_yellow = '#F9BB31'    # Ochre
 # -----------------------------------------------------
 
 [os]
-style = "bg:color_green fg:color_base_text"
+style = "bg:color_orange fg:color_base_text"
 disabled = false
 format = '[$symbol]($style)'
 
@@ -102,12 +102,12 @@ Pop         = ""
 
 [username]
 show_always = true
-style_user = "bg:color_green fg:color_base_text bold"
-style_root = "bg:color_green fg:color_base_text bold"
+style_user = "bg:color_orange fg:color_base_text bold"
+style_root = "bg:color_orange fg:color_base_text bold"
 format = '[ $user ]($style)'
 
 [directory]
-style = "bg:color_aqua fg:color_base_text"
+style = "bg:color_yellow fg:color_base_text"
 format = "[ $path ]($style)"
 truncation_length = 3
 truncation_symbol = "…/"
@@ -125,12 +125,12 @@ truncation_symbol = "…/"
 
 [git_branch]
 symbol = ""
-style = "bg:color_purple fg:color_base_text"
-format = '[[ $symbol $branch ](bg:color_purple fg:color_base_text)]($style)'
+style = "bg:color_aqua fg:color_base_text"
+format = '[[ $symbol $branch ](bg:color_aqua fg:color_base_text)]($style)'
 
 [git_status]
-style = "bg:color_purple fg:color_base_text"
-format = '[[($all_status$ahead_behind )](bg:color_purple fg:color_base_text)]($style)'
+style = "bg:color_aqua fg:color_base_text"
+format = '[[($all_status$ahead_behind )](bg:color_aqua fg:color_base_text)]($style)'
 
 # -----------------------------------------------------
 # 5. LANGUAGES & RUNTIMES (Blue Background, Light Text)
