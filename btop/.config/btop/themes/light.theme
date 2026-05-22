@@ -13,16 +13,16 @@ theme[hi_fg]="#CA2420"
 theme[selected_bg]="#D75C0F" 
 theme[selected_fg]="#F9EDD2" 
 theme[inactive_fg]="#8F8173" 
-theme[graph_text]="#282828"  
+theme[graph_text]="#8F8173"
 
 # -----------------------------------------------------
 # 2. Borders
 # -----------------------------------------------------
-theme[proc_misc]="#282828"
-theme[cpu_box]="#282828"    
-theme[mem_box]="#282828"
-theme[net_box]="#282828"
-theme[proc_box]="#282828"
+theme[proc_misc]="#D3C29F"
+theme[cpu_box]="#D3C29F"    
+theme[mem_box]="#D3C29F"
+theme[net_box]="#D3C29F"
+theme[proc_box]="#D3C29F"
 theme[div_line]="#8F8173"
 
 # -----------------------------------------------------

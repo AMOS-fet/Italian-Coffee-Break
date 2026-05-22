@@ -138,7 +138,6 @@ fi
 
 if command -v kitty &> /dev/null; then
     TEMPLATE_FILE="$DOTFILES/kitty/.config/kitty/theme-${MODE}.conf"
-    # CORRETTO: Scrive nei dotfiles
     TARGET_FILE="$DOTFILES/kitty/.config/kitty/theme.conf"
 
     if [[ -f "$TEMPLATE_FILE" ]]; then
@@ -360,131 +359,101 @@ GTK4_CSS="$HOME/.config/gtk-4.0/gtk.css"
 mkdir -p "$(dirname "$GTK3_CSS")"
 mkdir -p "$(dirname "$GTK4_CSS")"
 
-echo "@define-color accent_color $NEW_HEX;
-@define-color accent_bg_color $NEW_HEX;
-@define-color theme_selected_bg_color $NEW_HEX;
-@define-color theme_selected_fg_color $TEXT_COLOR;
-selection {
-    background-color: $NEW_HEX;
-    color: $TEXT_COLOR;
-}" > "$GTK4_CSS"
-
-
-cat > "$GTK3_CSS" <<EOF
-@define-color accent_color $NEW_HEX;
+# Creiamo un blocco CSS unificato e ad alta specificità
+COMMON_CSS="@define-color accent_color $NEW_HEX;
 @define-color accent_bg_color $NEW_HEX;
 @define-color theme_selected_bg_color $NEW_HEX;
 @define-color theme_selected_fg_color $TEXT_COLOR;
 
-selection,
-*:selected,
-entry selection,
-textview text selection,
-label selection,
-flowbox flowboxchild:selected {
+/* SELEZIONE */
+window selection,
+window *:selected,
+window entry selection,
+window textview text selection,
+window label selection,
+window flowbox flowboxchild:selected {
     background-color: $NEW_HEX;
     color: $TEXT_COLOR;
 }
 
+/* INPUT E CAMPI DI TESTO */
 window entry:focus,
 window .entry:focus,
 window combobox entry:focus,
-.background entry:focus,
-notebook entry:focus {
+window notebook entry:focus {
     border-color: $NEW_HEX;
     box-shadow: inset 0 0 0 1px $NEW_HEX;
     caret-color: $NEW_HEX;
 }
 
-scale trough,
-scale.marks trough {
-    background-image: none;
-    background-color: rgba(60, 60, 60, 0.4); 
-    border-radius: 6px;
-    min-height: 6px; 
-    min-width: 6px; 
-    margin: 6px 0;   
-}
-
-scale highlight,
-scale trough highlight,
-scale:focus highlight,
-scale.marks highlight,
-scale.marks trough highlight,
-scale fill,
-scale.marks fill {
+/* SLIDER E PROGRESS BAR */
+window scale highlight,
+window scale trough highlight,
+window scale:focus highlight,
+window scale fill,
+window scale.marks fill {
     background-image: none;
     background-color: $NEW_HEX;
-    border-radius: 6px;
-    min-height: 6px;
-    min-width: 6px;
 }
 
-scale slider,
-scale.marks slider,
-scale:hover slider {
+window scale slider,
+window scale.marks slider,
+window scale:hover slider {
     background-image: none;
     background-color: $NEW_HEX;
     border-color: $NEW_HEX;
-    border-radius: 100%;
     color: $NEW_HEX;
-    min-height: 18px; 
-    min-width: 18px;
-    margin: -6px;     
-    box-shadow: 0 1px 2px rgba(0,0,0,0.3); 
 }
 
-progressbar progress,
-progressbar.osd progress {
+window progressbar progress,
+window progressbar.osd progress {
     background-image: none;
     background-color: $NEW_HEX;
     border-color: $NEW_HEX;
 }
 
-levelbar block.high,
-levelbar block.low,
-levelbar block.filled {
+/* PULSANTI (Fix per i colori residui) */
+window button.suggested-action,
+window button.destructive-action,
+window headerbar button.suggested-action,
+dialog button.suggested-action,
+popover button.suggested-action,
+window button.text-button.suggested-action {
     background-image: none;
+    background-color: $NEW_HEX;
+    border-color: $NEW_HEX;
+    color: $TEXT_COLOR;
+}
+
+window button.link, 
+window link {
+    color: $NEW_HEX;
+}
+
+/* SWITCH, CHECKBOX E RADIO BUTTON */
+window check:checked,
+window radio:checked {
+    background-color: $NEW_HEX;
+    border-color: $NEW_HEX;
+    color: $TEXT_COLOR;
+}
+
+window switch:checked {
     background-color: $NEW_HEX;
     border-color: $NEW_HEX;
 }
 
-treeview.view:selected,
-column-header .title:selected,
-row:selected {
-    background-color: $NEW_HEX;
-    color: $TEXT_COLOR;
-}
-check:checked,
-radio:checked {
-    background-color: $NEW_HEX;
-    color: $TEXT_COLOR;
-    border-color: $NEW_HEX;
-}
-switch:checked {
-    background-color: $NEW_HEX;
-    border-color: $NEW_HEX;
-}
-switch:checked slider {
+window switch:checked slider {
     background-color: $TEXT_COLOR;
 }
 
-button.suggested-action,
-button.destructive-action,
-button.text-button.suggested-action {
-    background-image: none;
-    background-color: $NEW_HEX;
-    border-color: $NEW_HEX;
-    color: $TEXT_COLOR;
-}
-button.link, link {
-    color: $NEW_HEX;
-}
-
-notebook > header tab:checked {
+window notebook > header tab:checked {
     box-shadow: inset 0 -3px $NEW_HEX;
-}
-EOF
+}"
+
+# Applichiamo lo stesso blocco sia a GTK3 che a GTK4
+echo "$COMMON_CSS" > "$GTK3_CSS"
+echo "$COMMON_CSS" > "$GTK4_CSS"
 
 if command -v gsettings &> /dev/null; then
    # Force theme refresh
@@ -586,26 +555,24 @@ fi
 # 14. Application: NVIM
 # -----------------------------------------------------
 
-if command -v nvim &> /dev/null; then
-    TEMPLATE_FILE="$DOTFILES/nvim/.config/nvim/lua/coffee_break.lua"
-    # CORRETTO: Scrive nei dotfiles
-    TARGET_FILE="$DOTFILES/nvim/.config/nvim/lua/coffee_break.lua"
-
-    TEMPLATE_BG="$DOTFILES/nvim/.config/nvim/lua/config/bg_mode.lua"
-    # CORRETTO: Scrive nei dotfiles
-    TARGET_BG="$DOTFILES/nvim/.config/nvim/lua/config/bg_mode.lua"
-    
-    if [[ -f "$TEMPLATE_FILE" ]]; then
-        rm -f "$TARGET_FILE"
-        cp "$TEMPLATE_FILE" "$TARGET_FILE"    
-    fi
-
-    if [[ -f "$TEMPLATE_BG" ]]; then
-        rm -f "$TARGET_BG"
-        cp "$TEMPLATE_BG" "$TARGET_BG"    
-        sed -i "s/vim.o.background:.*;/vim.o.background: $MODE;/" "$TARGET_BG"
-    fi
-fi
+# if command -v nvim &> /dev/null; then
+#    TEMPLATE_FILE="$DOTFILES/nvim/.config/nvim/lua/coffee_break.lua"
+#    TARGET_FILE="$DOTFILES/nvim/.config/nvim/lua/coffee_break.lua"
+#
+#    TEMPLATE_BG="$DOTFILES/nvim/.config/nvim/lua/config/bg_mode.lua"
+#    TARGET_BG="$DOTFILES/nvim/.config/nvim/lua/config/bg_mode.lua"
+#    
+#    if [[ -f "$TEMPLATE_FILE" ]]; then
+#        rm -f "$TARGET_FILE"
+#        cp "$TEMPLATE_FILE" "$TARGET_FILE"    
+#    fi
+#
+#    if [[ -f "$TEMPLATE_BG" ]]; then
+#        rm -f "$TARGET_BG"
+#        cp "$TEMPLATE_BG" "$TARGET_BG"    
+#        sed -i "s/vim.o.background:.*;/vim.o.background: $MODE;/" "$TARGET_BG"
+#    fi
+# fi
 
 # -----------------------------------------------------
 # 15. Application: MAKO 
