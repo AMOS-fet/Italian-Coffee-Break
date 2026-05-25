@@ -112,7 +112,6 @@
     // -------------------------------------------------------------------------
 
     "custom/updates": {
-        // Updated to use the new kebab-case filename
         "exec": "~/dotfiles/scripts/check-updates.sh",
         "interval": 600,
         "format": "{}",
