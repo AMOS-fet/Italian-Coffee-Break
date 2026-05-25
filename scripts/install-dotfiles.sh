@@ -188,7 +188,42 @@ _stow() {
 
         stow -d "$DOTFILES_DIR" -t "$HOME" -R "$stow_folder"
     else
-        echo "  Nessuna config per $stow_folder (Salto stow)"
+        echo "  No config for $stow_folder (skipping stow)"
+    fi
+}
+
+
+_protect_local_files() {
+    local pkg=$1
+    
+    if [ "$pkg" == "colloid-gtk-manual" ] || [ "$pkg" == "whitesur-icon-manual" ] || [[ "$pkg" == *"fonts"* ]]; then
+        return
+    fi
+
+    local stow_folder="$pkg"
+    
+    case "$pkg" in
+        "hyprland")       stow_folder="hypr" ;;
+        "librewolf-bin")  stow_folder="librewolf" ;;
+    esac
+
+    local target_dir="$DOTFILES_DIR/$stow_folder"
+
+    if [ -d "$target_dir" ]; then
+        cd "$DOTFILES_DIR" || return
+        
+        while IFS= read -r file; do
+            [ -z "$file" ] && continue
+            
+            local clean_file="${file#./}"
+            
+            if git ls-files --error-unmatch "$clean_file" &> /dev/null; then
+                git update-index --skip-worktree "$clean_file"
+                gum style --foreground 245 "  -> Protected from Git: $clean_file"
+            fi
+        done < <(find "$stow_folder" -type f -name "*local*")
+        
+        cd - > /dev/null || return
     fi
 }
 
@@ -343,6 +378,7 @@ for line in $ALL_SELECTIONS; do
     
     _install "$pkg"
     _stow "$pkg"
+    _protect_local_files "$pkg"
     
     echo ""
 done
