@@ -50,11 +50,10 @@ $line_break$character"""
 # 2. PALETTE DEFINITION (Gruvbox Dark)
 # -----------------------------------------------------
 [palettes.gruvbox_dark]
-# Light Mode: Bars are dark/saturated, so text inside needs to be LIGHT
+
 color_base_text = '#F9EDD2' 
 color_fg0       = '#282828'
 
-# For end modules (beige backgrounds), we need DARK text for contrast
 color_ui_text   = '#504945'
 
 color_bg1    = '#8F8173'    # Dark Beige
@@ -99,6 +98,7 @@ Debian      = "󰣚"
 Redhat      = "󱄛"
 RedHatEnterprise = "󱄛"
 Pop         = ""
+Unknown     = "󰌽"
 
 [username]
 show_always = true
@@ -118,7 +118,7 @@ truncation_symbol = "…/"
 "Music"     = "󰝚 "
 "Pictures"  = " "
 "Developer" = "󰲋 "
-
+"Videos"    = " "
 # -----------------------------------------------------
 # 4. VERSION CONTROL (Git)
 # -----------------------------------------------------

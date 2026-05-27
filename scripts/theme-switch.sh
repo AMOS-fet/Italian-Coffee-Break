@@ -166,14 +166,16 @@ fi
 # -----------------------------------------------------
 
 if command -v starship &> /dev/null; then
-    TEMPLATE_FILE="$DOTFILES/starship/.config/starship-${MODE}.toml"
+    
+    bash "$DOTFILES/scripts/starship-override.sh" "$MODE"
+
+    TEMPLATE_FILE="$DOTFILES/starship/.config/starship-local-override.toml"
     TARGET_FILE="$DOTFILES/starship/.config/starship.toml"
 
     BASE_ACCENT="${ACCENT%_br}"
 
     COLORS_ARRAY=("red" "orange" "yellow" "green" "aqua" "blue" "purple")
 
-    
     START_INDEX=-1
     for i in "${!COLORS_ARRAY[@]}"; do
         if [[ "${COLORS_ARRAY[$i]}" == "$BASE_ACCENT" ]]; then
