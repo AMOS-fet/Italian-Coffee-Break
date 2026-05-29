@@ -253,7 +253,6 @@ tooltip label {
 #memory         { color: @yellow; }
 #disk           { color: @yellow; }
 #temperature    { color: @orange; }
-#backlight      { color: @fg; }
 #clock          { color: @green; font-weight: bold; }
 
 /* Network */
@@ -269,12 +268,17 @@ tooltip label {
 #bluetooth {
     color: @aqua;
     padding-left: 8px;
-    padding-right: 3px;
+    padding-right: 5px;
 }
 #bluetooth.connected { color: @blue; }
 #bluetooth.disabled  { color: @fg_dim; }
 #bluetooth:hover {
     color: @fg;
+}
+
+#backlight { 
+    color: @fg; 
+    padding-left: 0px;
 }
 
 /* PulseAudio */
