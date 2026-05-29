@@ -153,13 +153,13 @@
 
     "network": {
         "format-wifi": "<span size='12pt' rise='6000'>{icon}</span>",
-        "format-ethernet": "<span size='12pt' rise='6000'> </span>",
-        "format-linked": "",
+        "format-ethernet": "<span size='12pt' rise='6000'>󰈀 </span>",
+        "format-linked": " ",
         "format-disconnected": "<span size='12pt' rise='6000'>󰤯</span>",
         "format-disabled": "<span size='12pt' rise='6000'>󰤮</span>",
         "format-icons": ["󰤯", "󰤟", "󰤢", "󰤥", "󰤨"],
         "tooltip-format-wifi": "    SSID: {essid} ({signalStrength}%)\n    Interface: {ifname}\n    Private IP:  {ipaddr}",
-        "tooltip-format-ethernet": "  Ethernet Connection\n  Interface: {ifname}\n  Private IP: {ipaddr}",
+        "tooltip-format-ethernet": "   Ethernet Connection\n  Interface: {ifname}\n   Private IP: {ipaddr}",
         "tooltip-format-disconnected": "Disconnected",
         "tooltip-format-disabled": "Disabled",
         "on-click": "hyprctl dispatch exec '[float; size 600 700; center; pin] kitty --class nmtui-float -e nmtui'",

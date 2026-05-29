@@ -127,7 +127,7 @@ tooltip label {
     border-radius: 4px;
     margin-bottom: 5px;
     transition: color 0.2s ease;
-    }
+}
 
 #custom-os:hover {
     color: @fg;
