@@ -17,6 +17,9 @@ DOTFILES_DIR="$HOME/dotfiles"
 PACKAGES=(
     "hyprland:Tiling Window Manager"
     "kitty:GPU Accelerated Terminal"
+    "zsh:The Z shell"
+    "zsh-autosuggestions:Zsh plugin for history-based suggestions"
+    "zsh-syntax-highlighting:Zsh plugin for syntax highlighting"
     "librewolf-bin:Community-mantained fork of firefox"
     "awww:Wallpaper Utility"
     "mako:Notification Daemon"
@@ -160,7 +163,7 @@ _install() {
 _stow() {
     local pkg=$1
     
-    if [ "$pkg" == "colloid-gtk-manual" ] || [ "$pkg" == "whitesur-icon-manual" ] || [[ "$pkg" == *"fonts"* ]]; then
+    if [ "$pkg" == "colloid-gtk-manual" ] || [ "$pkg" == "whitesur-icon-manual" ] || [[ "$pkg" == *"fonts"* ]] || [ "$pkg" == "zsh-autosuggestions" ] || [ "$pkg" == "zsh-syntax-highlighting" ]; then
         return
     fi
 
@@ -169,6 +172,7 @@ _stow() {
     case "$pkg" in
         "hyprland")       stow_folder="hypr" ;;
         "librewolf-bin")  stow_folder="librewolf" ;;
+        "zsh")            stow_folder="shell" ;;
     esac
 
     local source_path="$DOTFILES_DIR/$stow_folder"
@@ -177,6 +181,10 @@ _stow() {
         echo "Stowing configuration for $stow_folder..."
         
         local target_config="$HOME/.config/$stow_folder"
+        
+        if [ "$pkg" == "zsh" ]; then
+            target_config="$HOME/.zshrc"
+        fi
         
         if [ -e "$target_config" ]; then
             if [ -L "$target_config" ]; then
@@ -196,7 +204,7 @@ _stow() {
 _protect_local_files() {
     local pkg=$1
     
-    if [ "$pkg" == "colloid-gtk-manual" ] || [ "$pkg" == "whitesur-icon-manual" ] || [[ "$pkg" == *"fonts"* ]]; then
+    if [ "$pkg" == "colloid-gtk-manual" ] || [ "$pkg" == "whitesur-icon-manual" ] || [[ "$pkg" == *"fonts"* ]] || [ "$pkg" == "zsh-autosuggestions" ] || [ "$pkg" == "zsh-syntax-highlighting" ]; then
         return
     fi
 
@@ -205,6 +213,7 @@ _protect_local_files() {
     case "$pkg" in
         "hyprland")       stow_folder="hypr" ;;
         "librewolf-bin")  stow_folder="librewolf" ;;
+        "zsh")            stow_folder="shell" ;;
     esac
 
     local target_dir="$DOTFILES_DIR/$stow_folder"
