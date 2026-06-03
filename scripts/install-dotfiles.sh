@@ -30,6 +30,7 @@ PACKAGES=(
     "fastfetch:System information tool"
     "networkmanager:Standard Network Manager"
     "bulletty:Pretty feed reader for the terminal"
+    "btop:A monitor of resources"
 )
 
 
