@@ -31,7 +31,8 @@ git clone https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git ~/dotfiles
    
  ```` Bash
  cd ~/dotfiles
- chmod +x install.sh./install.sh
+ chmod +x install.sh
+ ./install.sh
  ```` 
 
 ## 🎨 Theming and Accent Colors
