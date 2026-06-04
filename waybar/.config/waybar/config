@@ -187,7 +187,7 @@
         },
         "tooltip-format": "{controller_alias}\t{controller_address}\n\n{num_connections} connected",
         "tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{num_connections} connected\n\n{device_enumerate}",
-        "on-click": "kitty -e bluetuith",
+        "on-click": "hyprctl dispatch exec '[float; size 600 700; center; pin] kitty --class bluetuith-float -e bluetuith'",
         "on-click-right": "rfkill toggle bluetooth"
     },
 
@@ -209,7 +209,7 @@
             "default": ["", "", ""]
         },
         "on-click": "pactl set-sink-mute @DEFAULT_SINK@ toggle",
-        "on-click-right": "exec pavucontrol",
+        "on-click-right": "hyprctl dispatch exec '[float; size 606 700; center; pin] pavucontrol'",
         "cursor": 116,
     },
 

@@ -100,7 +100,6 @@ RedHatEnterprise = "󱄛"
 Pop         = ""
 Unknown     = "󰌽"
 
-CachyOS = "󰌽"
 [username]
 show_always = true
 style_user = "bg:color_orange fg:color_base_text bold"
