@@ -3,7 +3,11 @@
     "logo": {
         "type": "kitty", 
         "source": "~/dotfiles/fastfetch/.config/fastfetch/camera_cafe_ascii.png",
-        "width": 30
+        "width": 30,
+        "padding": {
+            "left": 4,
+            "right": 6
+        }
     },
     "display": {
         "separator": " ➜  ",
