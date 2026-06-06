@@ -8,7 +8,7 @@ configuration {
     show-icons: true;
     display-drun: "";
     display-run: "Run";
-    font: "SF Pro Display 11"; 
+    font: "SF Pro Display, JetBrainsMono Nerd Font 11"; 
     drun-display-format: "{name}";
 }
 
